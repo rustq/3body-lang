@@ -1,0 +1,19 @@
+[package]
+name = "three-body-lang"
+version = "0.1.0"
+authors = ["rustq"]
+
+[dependencies]
+rustyline = { version = "1.0.0", optional = true }
+
+[[bin]]
+name = "three-body-lang"
+path = "src/bin/main.rs"
+required-features = ["binaries"]
+
+[[bin]]
+name = "wasm"
+path = "src/wasm/main.rs"
+
+[features]
+binaries = ["rustyline"]
