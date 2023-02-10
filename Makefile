@@ -1,6 +1,5 @@
 .PHONY: setup
 setup:
-	cargo install wasm-gc
 	(cd web && yarn)
 
 .PHONY: start

@@ -1,34 +1,163 @@
 extern crate monkey;
 extern crate rustyline;
+extern crate rustyline_derive;
 
 use monkey::evaluator::builtins::new_builtins;
 use monkey::evaluator::env::Env;
-use monkey::evaluator::object::Object;
 use monkey::evaluator::Evaluator;
-use monkey::lexer::Lexer;
-use monkey::parser::Parser;
-use rustyline::error::ReadlineError;
-use rustyline::Editor;
+use monkey::lexer::{is_whitespace, Lexer};
+use monkey::parser::{ParseError, Parser};
+use monkey::token::Token;
+use std::borrow::Cow::{self, Borrowed, Owned};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-fn main() {
-    let mut rl = Editor::<()>::new();
-    let mut env = Env::from(new_builtins());
+use rustyline::completion::{Completer, Pair};
+use rustyline::error::ReadlineError;
+use rustyline::highlight::{Highlighter, MatchingBracketHighlighter};
+use rustyline::hint::{Hinter, HistoryHinter};
+use rustyline::validate::{self, Validator};
+use rustyline::KeyEvent;
+use rustyline::{Cmd, CompletionType, Config, Context, EditMode, Editor};
+use rustyline_derive::Helper;
 
-    env.set(
-        String::from("puts"),
-        &Object::Builtin(-1, |args| {
-            for arg in args {
-                println!("{}", arg);
+#[derive(Helper)]
+struct MonkeyHelper {
+    env: Rc<RefCell<Env>>,
+    highlighter: MatchingBracketHighlighter,
+    hinter: HistoryHinter,
+    colored_prompt: String,
+}
+
+impl Completer for MonkeyHelper {
+    type Candidate = Pair;
+
+    fn complete(
+        &self,
+        line: &str,
+        pos: usize,
+        _ctx: &Context,
+    ) -> Result<(usize, Vec<Pair>), ReadlineError> {
+        let (start, word) = extract_word(line, pos);
+        let mut matches: Vec<Pair> = Vec::new();
+        for key in self.env.borrow().store.keys() {
+            if key.starts_with(word) {
+                matches.push(Pair {
+                    display: key.to_string(),
+                    replacement: key.to_string(),
+                });
             }
-            Object::Null
-        }),
-    );
+        }
 
+        Ok((start, matches))
+    }
+}
+
+impl Hinter for MonkeyHelper {
+    type Hint = String;
+
+    fn hint(&self, line: &str, pos: usize, ctx: &Context) -> Option<String> {
+        self.hinter.hint(line, pos, ctx)
+    }
+}
+
+impl Highlighter for MonkeyHelper {
+    fn highlight_prompt<'b, 's: 'b, 'p: 'b>(
+        &'s self,
+        prompt: &'p str,
+        default: bool,
+    ) -> Cow<'b, str> {
+        if default {
+            Borrowed(&self.colored_prompt)
+        } else {
+            Borrowed(prompt)
+        }
+    }
+
+    fn highlight_hint<'h>(&self, hint: &'h str) -> Cow<'h, str> {
+        Owned("\x1b[1m".to_owned() + hint + "\x1b[m")
+    }
+
+    fn highlight<'l>(&self, line: &'l str, pos: usize) -> Cow<'l, str> {
+        self.highlighter.highlight(line, pos)
+    }
+
+    fn highlight_char(&self, line: &str, pos: usize) -> bool {
+        self.highlighter.highlight_char(line, pos)
+    }
+}
+
+impl Validator for MonkeyHelper {
+    fn validate(
+        &self,
+        ctx: &mut validate::ValidationContext,
+    ) -> rustyline::Result<validate::ValidationResult> {
+        let mut parser = Parser::new(Lexer::new(ctx.input()));
+        let _ = parser.parse();
+        let errors = parser.get_errors();
+
+        Ok(match errors.len() {
+            0 => validate::ValidationResult::Valid(None),
+            _ => match &errors[0] {
+                ParseError::UnexpectedToken {
+                    want: _,
+                    got: Token::Eof,
+                } => validate::ValidationResult::Incomplete,
+                x => validate::ValidationResult::Invalid(Some(format!("{}", x))),
+            },
+        })
+    }
+
+    fn validate_while_typing(&self) -> bool {
+        false
+    }
+}
+
+// ---- Completer ----
+
+/// Given a `line` and a cursor `pos`ition,
+/// try to find backward the start of a word.
+/// Return (0, `line[..pos]`) if no break char has been found.
+/// Return the word and its start position (idx, `line[idx..pos]`) otherwise.
+pub fn extract_word<'l>(line: &'l str, pos: usize) -> (usize, &'l str) {
+    let line = &line[..pos];
+    if line.is_empty() {
+        return (0, line);
+    }
+    let mut start = None;
+    for (i, c) in line.char_indices().rev() {
+        if is_whitespace(c) {
+            start = Some(i + c.len_utf8());
+        }
+    }
+
+    match start {
+        Some(start) => (start, &line[start..]),
+        None => (0, line),
+    }
+}
+
+// ---- Main ----
+fn main() {
+    let env = Env::from(new_builtins());
     let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
 
-    println!("Hello! This is the Monkey programming language!");
+    let config = Config::builder()
+        .history_ignore_space(true)
+        .completion_type(CompletionType::List)
+        .edit_mode(EditMode::Emacs)
+        .build();
+    let h = MonkeyHelper {
+        env: evaluator.env.clone(),
+        highlighter: MatchingBracketHighlighter::new(),
+        hinter: HistoryHinter {},
+        colored_prompt: "\x1b[32m>>\x1b[0m ".to_owned(),
+    };
+    let mut rl = Editor::with_config(config);
+    rl.set_helper(Some(h));
+    rl.bind_sequence(KeyEvent::alt('n'), Cmd::HistorySearchForward);
+    rl.bind_sequence(KeyEvent::alt('p'), Cmd::HistorySearchBackward);
+
     println!("Feel free to type in commands\n");
 
     loop {
@@ -47,12 +176,12 @@ fn main() {
                     continue;
                 }
 
-                if let Some(evaluated) = evaluator.eval(program) {
+                if let Some(evaluated) = evaluator.eval(&program) {
                     println!("{}\n", evaluated);
                 }
             }
             Err(ReadlineError::Interrupted) => {
-                println!("\nBye :)");
+                println!("\n文明的种子仍在，它将重新启动，再次开始在三体世界中命运莫测的进化，欢迎您再次登录");
                 break;
             }
             Err(ReadlineError::Eof) => {

@@ -1,5 +1,6 @@
 use evaluator::object::*;
 use std::collections::HashMap;
+use std::convert::TryInto;
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -8,7 +9,10 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("last"), Object::Builtin(1, monkey_last));
     builtins.insert(String::from("rest"), Object::Builtin(1, monkey_rest));
     builtins.insert(String::from("push"), Object::Builtin(2, monkey_push));
-    builtins.insert(String::from("广播"), Object::Builtin(2, three_body_puts));
+    builtins.insert(String::from("广播"), Object::Builtin(1, three_body_puts));
+    builtins.insert(String::from("二向箔清理"), Object::Builtin(0, three_body_clear));
+    builtins.insert(String::from("破壁"), Object::Builtin(0, three_body_exit));
+    builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
     builtins
 }
 
@@ -22,33 +26,39 @@ fn monkey_len(args: Vec<Object>) -> Object {
 
 fn monkey_first(args: Vec<Object>) -> Object {
     match &args[0] {
-        Object::Array(o) => if let Some(ao) = o.first() {
-            ao.clone()
-        } else {
-            Object::Null
-        },
+        Object::Array(o) => {
+            if let Some(ao) = o.first() {
+                ao.clone()
+            } else {
+                Object::Null
+            }
+        }
         o => Object::Error(format!("argument to `first` must be array. got {}", o)),
     }
 }
 
 fn monkey_last(args: Vec<Object>) -> Object {
     match &args[0] {
-        Object::Array(o) => if let Some(ao) = o.last() {
-            ao.clone()
-        } else {
-            Object::Null
-        },
+        Object::Array(o) => {
+            if let Some(ao) = o.last() {
+                ao.clone()
+            } else {
+                Object::Null
+            }
+        }
         o => Object::Error(format!("argument to `last` must be array. got {}", o)),
     }
 }
 
 fn monkey_rest(args: Vec<Object>) -> Object {
     match &args[0] {
-        Object::Array(o) => if o.len() > 0 {
-            Object::Array(o[1..].to_vec())
-        } else {
-            Object::Null
-        },
+        Object::Array(o) => {
+            if !o.is_empty() {
+                Object::Array(o[1..].to_vec())
+            } else {
+                Object::Null
+            }
+        }
         o => Object::Error(format!("argument to `rest` must be array. got {}", o)),
     }
 }
@@ -69,4 +79,25 @@ fn three_body_puts(args: Vec<Object>) -> Object {
         println!("{}", arg);
     }
     Object::Null
+}
+
+fn three_body_clear(args: Vec<Object>) -> Object {
+    std::process::Command::new("clear").status().unwrap();
+    Object::Null
+}
+
+fn three_body_exit(args: Vec<Object>) -> Object {
+    std::process::exit(0);
+    Object::Null
+}
+
+fn three_body_sleep(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Int(o) => {
+            let duration = std::time::Duration::from_millis((*o).try_into().unwrap());
+            std::thread::sleep(duration);
+            Object::Null
+        },
+        _ => Object::Null
+    }
 }

@@ -1,13 +1,18 @@
+cargo-features = ["named-profiles"]
+
 [package]
-name = "three-body-lang"
+name = "monkey"
 version = "0.1.0"
 authors = ["rustq"]
 
 [dependencies]
-rustyline = { version = "1.0.0", optional = true }
+rustyline = { version = "8.0.0", optional = true }
+rustyline-derive = { version = "0.4.0", optional = true }
+unicode-xid = { version = "0.2.1" }
+unicode-normalization = "0.1.8"
 
 [[bin]]
-name = "three-body-lang"
+name = "monkey"
 path = "src/bin/main.rs"
 required-features = ["binaries"]
 
@@ -16,4 +21,15 @@ name = "wasm"
 path = "src/wasm/main.rs"
 
 [features]
-binaries = ["rustyline"]
+binaries = ["rustyline", "rustyline-derive"]
+wasm = []
+
+[profile.release]
+lto = true
+
+[profile.tiny]
+inherits = 'release'
+opt-level = 'z'
+
+[profile.tiny.build-override]
+opt-level = 'z'

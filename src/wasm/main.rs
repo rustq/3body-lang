@@ -9,7 +9,7 @@ use monkey::formatter::Formatter;
 use monkey::lexer::Lexer;
 use monkey::parser::Parser;
 use std::cell::RefCell;
-use std::ffi::{CStr, CString};
+use std::ffi::{CStr, CString, c_uint};
 use std::mem;
 use std::os::raw::{c_char, c_void};
 use std::rc::Rc;
@@ -18,6 +18,8 @@ fn main() {}
 
 extern "C" {
     fn print(input_ptr: *mut c_char);
+    fn sleep(secs: c_uint) -> c_uint;
+    fn clear() -> c_void;
 }
 
 fn internal_print(msg: &str) {
@@ -25,6 +27,19 @@ fn internal_print(msg: &str) {
         print(string_to_ptr(msg.to_string()));
     }
 }
+
+fn internal_sleep(time: &i64) {
+    unsafe {
+        sleep(*time as u32);
+    }
+}
+
+fn internal_clear() {
+    unsafe {
+        clear();
+    }
+}
+
 
 fn string_to_ptr(s: String) -> *mut c_char {
     CString::new(s).unwrap().into_raw()
@@ -73,7 +88,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
     let mut env = Env::from(new_builtins());
 
     env.set(
-        String::from("puts"),
+        String::from("广播"),
         &Object::Builtin(-1, |args| {
             for arg in args {
                 internal_print(&format!("{}", arg));
@@ -82,8 +97,29 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
         }),
     );
 
+    env.set(
+        String::from("冬眠"),
+        &Object::Builtin(-1, |args| {
+            match &args[0] {
+                Object::Int(o) => {
+                    internal_sleep(o);
+                    Object::Null
+                },
+                _ => Object::Null
+            }
+        }),
+    );
+
+    env.set(
+        String::from("二向箔清理"),
+        &Object::Builtin(-1, |args| {
+            internal_clear();
+            Object::Null
+        }),
+    );
+
     let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
-    let evaluated = evaluator.eval(program).unwrap_or(Object::Null);
+    let evaluated = evaluator.eval(&program).unwrap_or(Object::Null);
     let output = format!("{}", evaluated);
 
     string_to_ptr(output)

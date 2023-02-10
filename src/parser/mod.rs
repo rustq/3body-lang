@@ -4,47 +4,32 @@ use std::fmt;
 use token::Token;
 
 #[derive(Debug, Clone)]
-pub enum ParseErrorKind {
-    UnexpectedToken,
-}
-
-impl fmt::Display for ParseErrorKind {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            ParseErrorKind::UnexpectedToken => write!(f, "Unexpected Token"),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct ParseError {
-    kind: ParseErrorKind,
-    msg: String,
-}
-
-impl ParseError {
-    fn new(kind: ParseErrorKind, msg: String) -> Self {
-        ParseError { kind, msg }
-    }
+pub enum ParseError {
+    UnexpectedToken { want: Option<Token>, got: Token },
 }
 
 impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}: {}", self.kind, self.msg)
+        match &*self {
+            ParseError::UnexpectedToken { want: w, got: g } => match w {
+                Some(w) => write!(f, "Unexpected Token: expected {:?}, got {:?}", w, g),
+                None => write!(f, "Unexpected Token: no prefix rule for {:?}", g),
+            },
+        }
     }
 }
 
 pub type ParseErrors = Vec<ParseError>;
 
-pub struct Parser<'a> {
-    lexer: Lexer<'a>,
+pub struct Parser {
+    lexer: Lexer,
     current_token: Token,
     next_token: Token,
     errors: ParseErrors,
 }
 
-impl<'a> Parser<'a> {
-    pub fn new(lexer: Lexer<'a>) -> Self {
+impl Parser {
+    pub fn new(lexer: Lexer) -> Self {
         let mut parser = Parser {
             lexer,
             current_token: Token::Eof,
@@ -91,10 +76,10 @@ impl<'a> Parser<'a> {
     fn expect_next_token(&mut self, tok: Token) -> bool {
         if self.next_token_is(&tok) {
             self.bump();
-            return true;
+            true
         } else {
             self.error_next_token(tok);
-            return false;
+            false
         }
     }
 
@@ -107,23 +92,17 @@ impl<'a> Parser<'a> {
     }
 
     fn error_next_token(&mut self, tok: Token) {
-        self.errors.push(ParseError::new(
-            ParseErrorKind::UnexpectedToken,
-            format!(
-                "expected next token to be {:?}, got {:?} instead",
-                tok, self.next_token
-            ),
-        ));
+        self.errors.push(ParseError::UnexpectedToken {
+            want: Some(tok),
+            got: self.next_token.clone(),
+        });
     }
 
     fn error_no_prefix_parser(&mut self) {
-        self.errors.push(ParseError::new(
-            ParseErrorKind::UnexpectedToken,
-            format!(
-                "no prefix parse function for  \"{:?}\" found",
-                self.current_token,
-            ),
-        ));
+        self.errors.push(ParseError::UnexpectedToken {
+            want: None,
+            got: self.next_token.clone(),
+        });
     }
 
     pub fn parse(&mut self) -> Program {
@@ -145,7 +124,11 @@ impl<'a> Parser<'a> {
 
         let mut block = vec![];
 
-        while !self.current_token_is(Token::Rbrace) && !self.current_token_is(Token::Eof) {
+        while !self.current_token_is(Token::Rbrace) {
+            if self.current_token_is(Token::Eof) {
+                self.error_next_token(Token::Rbrace);
+                return block;
+            }
             match self.parse_stmt() {
                 Some(stmt) => block.push(stmt),
                 None => {}
@@ -233,6 +216,7 @@ impl<'a> Parser<'a> {
             Token::Bang | Token::Minus | Token::Plus => self.parse_prefix_expr(),
             Token::Lparen => self.parse_grouped_expr(),
             Token::If => self.parse_if_expr(),
+            Token::While => self.parse_while_expr(),
             Token::Func => self.parse_func_expr(),
             _ => {
                 self.error_no_prefix_parser();
@@ -279,15 +263,12 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_ident_expr(&mut self) -> Option<Expr> {
-        match self.parse_ident() {
-            Some(ident) => Some(Expr::Ident(ident)),
-            None => None,
-        }
+        self.parse_ident().map(Expr::Ident)
     }
 
     fn parse_int_expr(&mut self) -> Option<Expr> {
         match self.current_token {
-            Token::Int(ref mut int) => Some(Expr::Literal(Literal::Int(int.clone()))),
+            Token::Int(ref mut int) => Some(Expr::Literal(Literal::Int(*int))),
             _ => None,
         }
     }
@@ -301,16 +282,13 @@ impl<'a> Parser<'a> {
 
     fn parse_bool_expr(&mut self) -> Option<Expr> {
         match self.current_token {
-            Token::Bool(value) => Some(Expr::Literal(Literal::Bool(value == true))),
+            Token::Bool(value) => Some(Expr::Literal(Literal::Bool(value))),
             _ => None,
         }
     }
 
     fn parse_array_expr(&mut self) -> Option<Expr> {
-        match self.parse_expr_list(Token::Rbracket) {
-            Some(list) => Some(Expr::Literal(Literal::Array(list))),
-            None => None,
-        }
+        self.parse_expr_list(Token::Rbracket).map(|list| Expr::Literal(Literal::Array(list)))
     }
 
     fn parse_hash_expr(&mut self) -> Option<Expr> {
@@ -391,10 +369,7 @@ impl<'a> Parser<'a> {
 
         self.bump();
 
-        match self.parse_expr(Precedence::Prefix) {
-            Some(expr) => Some(Expr::Prefix(prefix, Box::new(expr))),
-            None => None,
-        }
+        self.parse_expr(Precedence::Prefix).map(|expr| Expr::Prefix(prefix, Box::new(expr)))
     }
 
     fn parse_infix_expr(&mut self, left: Expr) -> Option<Expr> {
@@ -416,10 +391,7 @@ impl<'a> Parser<'a> {
 
         self.bump();
 
-        match self.parse_expr(precedence) {
-            Some(expr) => Some(Expr::Infix(infix, Box::new(left), Box::new(expr))),
-            None => None,
-        }
+        self.parse_expr(precedence).map(|expr| Expr::Infix(infix, Box::new(left), Box::new(expr)))
     }
 
     fn parse_index_expr(&mut self, left: Expr) -> Option<Expr> {
@@ -482,6 +454,30 @@ impl<'a> Parser<'a> {
             cond: Box::new(cond),
             consequence,
             alternative,
+        })
+    }
+
+    fn parse_while_expr(&mut self) -> Option<Expr> {
+        if !self.expect_next_token(Token::Lparen) {
+            return None;
+        }
+
+        self.bump();
+
+        let cond = match self.parse_expr(Precedence::Lowest) {
+            Some(expr) => expr,
+            None => return None,
+        };
+
+        if !self.expect_next_token(Token::Rparen) || !self.expect_next_token(Token::Lbrace) {
+            return None;
+        }
+
+        let consequence = self.parse_block_stmt();
+
+        Some(Expr::While {
+            cond: Box::new(cond),
+            consequence,
         })
     }
 
@@ -559,7 +555,7 @@ mod tests {
     fn check_parse_errors(parser: &mut Parser) {
         let errors = parser.get_errors();
 
-        if errors.len() == 0 {
+        if errors.is_empty() {
             return;
         }
 

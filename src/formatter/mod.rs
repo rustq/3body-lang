@@ -1,4 +1,6 @@
+#![allow(clippy::if_same_then_else)]
 use ast::*;
+use lexer::unescape::escape_str;
 
 struct FormatConfig {
     max_line_length: usize,
@@ -82,7 +84,7 @@ impl Formatter {
             self.column = self.indent * 2 + 1;
 
             if i > 0 {
-                result.push_str("\n");
+                result.push('\n');
             }
 
             let indent_str = if stmt == Stmt::Blank {
@@ -114,7 +116,7 @@ impl Formatter {
 
     fn format_let_stmt(&mut self, ident: Ident, expr: Expr) -> String {
         let ident_str = self.format_ident_expr(ident);
-        let result = String::from(format!("let {} = ", ident_str));
+        let result = format!("let {} = ", ident_str);
 
         self.column += result.len();
 
@@ -145,6 +147,7 @@ impl Formatter {
                 consequence,
                 alternative,
             } => self.format_if_expr(cond, consequence, alternative),
+            Expr::While { cond, consequence } => self.format_while_expr(cond, consequence),
             Expr::Func { params, body } => self.format_func_expr(params, body),
             Expr::Call { func, args } => self.format_call_expr(func, args),
         }
@@ -173,7 +176,7 @@ impl Formatter {
     }
 
     fn format_string_literal(&mut self, value: String) -> String {
-        let result = format!("\"{}\"", value);
+        let result = escape_str(&value);
         self.column += result.len();
         result
     }
@@ -198,7 +201,7 @@ impl Formatter {
 
             if wrap {
                 if i == 0 {
-                    result.push_str("\n");
+                    result.push('\n');
                 } else {
                     result.push_str(",\n");
                 }
@@ -209,12 +212,10 @@ impl Formatter {
                     self.indent -= 1;
                     result.push_str(&format!("\n{}", self.indent_str(0)));
                 }
+            } else if i > 0 {
+                result.push_str(&format!(", {}", expr_str));
             } else {
-                if i > 0 {
-                    result.push_str(&format!(", {}", expr_str));
-                } else {
-                    result.push_str(&expr_str);
-                }
+                result.push_str(&expr_str);
             }
         }
 
@@ -244,7 +245,7 @@ impl Formatter {
 
             if wrap {
                 if i > 0 {
-                    result.push_str(",");
+                    result.push(',');
                 }
 
                 result.push_str(&format!(
@@ -260,7 +261,7 @@ impl Formatter {
                 }
             } else {
                 if i == 0 {
-                    result.push_str(" ");
+                    result.push(' ');
                 } else {
                     result.push_str(", ");
                 }
@@ -268,7 +269,7 @@ impl Formatter {
                 result.push_str(&format!("{}: {}", key_str, value_str));
 
                 if i + 1 == total {
-                    result.push_str(" ");
+                    result.push(' ');
                 }
             }
         }
@@ -343,6 +344,21 @@ impl Formatter {
 
         self.indent -= 1;
 
+        result
+    }
+
+    fn format_while_expr(&mut self, cond: Box<Expr>, consequence: BlockStmt) -> String {
+        let cond_str = self.format_expr(*cond, Precedence::Lowest);
+        self.indent += 1;
+
+        let consequence_str = self.format_block_stmt(consequence);
+        let indent_str = self.indent_str(-1);
+        self.indent -= 1;
+
+        let result = format!(
+            "while ({}) {{\n{}\n{}}}",
+            cond_str, consequence_str, indent_str
+        );
         result
     }
 

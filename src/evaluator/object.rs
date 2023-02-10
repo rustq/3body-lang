@@ -1,5 +1,8 @@
+#![allow(clippy::derive_hash_xor_eq)]
+
 use ast::*;
 use evaluator::env::*;
+use lexer::unescape::escape_str;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -22,11 +25,12 @@ pub enum Object {
     Error(String),
 }
 
+/// This is actually repr
 impl fmt::Display for Object {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Object::Int(ref value) => write!(f, "{}", value),
-            Object::String(ref value) => write!(f, "{}", value),
+            Object::String(ref value) => write!(f, "{}", escape_str(value)),
             Object::Bool(ref value) => write!(f, "{}", value),
             Object::Array(ref objects) => {
                 let mut result = String::new();
@@ -54,7 +58,7 @@ impl fmt::Display for Object {
                 let mut result = String::new();
                 for (i, Ident(ref s)) in params.iter().enumerate() {
                     if i < 1 {
-                        result.push_str(&format!("{}", s));
+                        result.push_str(&s.to_string());
                     } else {
                         result.push_str(&format!(", {}", s));
                     }
@@ -63,8 +67,8 @@ impl fmt::Display for Object {
             }
             Object::Builtin(_, _) => write!(f, "[builtin function]"),
             Object::Null => write!(f, "null"),
-            Object::ReturnValue(ref value) => write!(f, "{}", value),
-            Object::Error(ref value) => write!(f, "{}", value),
+            Object::ReturnValue(ref value) => write!(f, "ReturnValue({})", value),
+            Object::Error(ref value) => write!(f, "Error({})", value),
         }
     }
 }
