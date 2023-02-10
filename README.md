@@ -13,7 +13,7 @@
 ## Syntax overview
 
 ```rust
-给 文明 以 "岁月";
+给 岁月 以 "文明";
 ```
 
 ```rust

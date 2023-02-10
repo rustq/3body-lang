@@ -3,9 +3,9 @@ export const SHARE_QUERY_KEY = 's';
 export const SNIPPETS = [
   {
     label: 'Let',
-    value: `给 文明 以 "岁月";
+    value: `给 岁月 以 "文明";
 
-文明
+岁月
 `,
   },
   {

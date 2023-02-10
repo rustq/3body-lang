@@ -458,8 +458,8 @@ mod tests {
     fn test_3body_consume_identifiers() {
         let tests = vec![
             (
-                "给 文明 以 \"岁月\"; 文明",
-                Some(Object::String(String::from("岁月"))),
+                "给 岁月 以 \"文明\"; 岁月",
+                Some(Object::String(String::from("文明"))),
             ),
             (
                 "给 自然选择 以 0; 自然选择 前进 4",
