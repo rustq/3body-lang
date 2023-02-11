@@ -81,14 +81,13 @@ fn three_body_puts(args: Vec<Object>) -> Object {
     Object::Null
 }
 
-fn three_body_clear(args: Vec<Object>) -> Object {
+fn three_body_clear(_args: Vec<Object>) -> Object {
     std::process::Command::new("clear").status().unwrap();
     Object::Null
 }
 
-fn three_body_exit(args: Vec<Object>) -> Object {
+fn three_body_exit(_args: Vec<Object>) -> Object {
     std::process::exit(0);
-    Object::Null
 }
 
 fn three_body_sleep(args: Vec<Object>) -> Object {

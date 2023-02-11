@@ -478,8 +478,8 @@ mod tests {
                 Some(Object::Bool(false)),
             ),
             (
-                "给 黑暗森林 以 法则() { 给 文明的需要 以 [\"生存\", \"不断增长和扩张\"]; !!文明的需要 } 黑暗森林() ",
-                Some(Object::Bool(true)),
+                "给 黑暗森林 以 法则() { 给 基本公理 以 [\"生存是文明的第一需要\", \"文明不断增长和扩张，但宇宙中的物质总量保持不变\"]; 基本公理 } 黑暗森林() ",
+                Some(Object::Array(vec![Object::String(String::from("生存是文明的第一需要")), Object::String(String::from("文明不断增长和扩张，但宇宙中的物质总量保持不变"))])),
             )
         ];
         

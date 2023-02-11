@@ -112,7 +112,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
 
     env.set(
         String::from("二向箔清理"),
-        &Object::Builtin(-1, |args| {
+        &Object::Builtin(-1, |_args| {
             internal_clear();
             Object::Null
         }),

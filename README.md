@@ -1,4 +1,4 @@
-# 3Body Lang
+# 3body-lang
 
 [![Package version](https://img.shields.io/crates/v/three_body_lang.svg)](https://crates.io/crates/three_body_lang)
 [![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://github.com/rustq/three_body_lang/blob/master/LICENSE)
@@ -9,7 +9,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 
 Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
-## Try 3Body Lang !
+## Try 3body-lang
 
 ### With REPL
 
@@ -18,17 +18,15 @@ Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ### With Online Playground
 
-![playground](https://user-images.githubusercontent.com/11075892/218237993-c128c439-8048-406c-b043-0abcd33d4833.png)
+![playground](https://user-images.githubusercontent.com/11075892/218256580-454d2af5-827a-4d02-952f-831295338330.png)
 
 Working with Wasm!! 主很在乎 👏🏻
 
-[https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
+Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## Syntax overview
 
 ### Variable bindings
-
-Variable bindings, such as those supported by many programming languages, are implemented. Variables can be defined using the let keyword.
 
 ##### Format
 
@@ -46,7 +44,7 @@ Variable bindings, such as those supported by many programming languages, are im
 
 ### Operators
 
-##### + 运算符
+##### 前进(+)运算符
 
 ```rust
 给 自然选择 以 0;
@@ -56,7 +54,7 @@ Variable bindings, such as those supported by many programming languages, are im
 // > 4
 ```
 
-#### - 运算符
+##### 降维(-)运算符
 
 ```rust
 给 宇宙 以 { "维度": 10 };
@@ -69,31 +67,31 @@ Variable bindings, such as those supported by many programming languages, are im
 ### Boolean
 
 ```rust
-return 这是计划的一部分
+这是计划的一部分
 
 // > true
 ```
 
 ```rust
-return 主不在乎
+主不在乎
 
 // > false
 ```
 
 ### Function
 
-#### Format
+##### Format
 
 ```
 法则 (<parameter one>, <parameter two>, ...) { <block statement> };
 ```
 
-#### Example
+##### Example
 
 ```rust
 给 黑暗森林 以 法则() {
-    给 文明的需要 以 ["生存", "不断增长和扩张"];
-    !!文明的需要
+    给 基本公理 以 ["生存是文明的第一需要", "文明不断增长和扩张，但宇宙中的物质总量保持不变"];
+    基本公理
 }
 
 黑暗森林()
@@ -103,13 +101,13 @@ return 主不在乎
 
 ### Print
 
-#### Format
+##### Format
 
 ```
 广播(<arg1>, <arg2>, ...): void
 ```
 
-#### Example
+##### Example
 
 ```rust
 给 三体世界坐标 以 "半人马星系";
@@ -121,13 +119,13 @@ return 主不在乎
 
 ### Sleep
 
-#### Format
+##### Format
 
 ```
 冬眠(<arg1>): void
 ```
 
-#### Example
+##### Example
 
 ```rust
 冬眠(1000);
@@ -135,8 +133,30 @@ return 主不在乎
 
 ### Clear
 
+##### Format
+
+```
+二向箔清理(): void
+```
+
+##### Example
+
 ```rust
 二向箔清理();
+```
+
+### Exit
+
+##### Format
+
+```
+破壁(): void
+```
+
+##### Example
+
+```rust
+破壁();
 ```
 
 ## Summary
@@ -177,8 +197,14 @@ $ make test
 
 | Author |
 | ----------- |
-| ![meloalright](https://avatars.githubusercontent.com/u/11075892?s=96&amp;v=4)       |
+| [![meloalright](https://avatars.githubusercontent.com/u/11075892?s=96&amp;v=4)](https://github.com/meloalright)       |
 | [meloalright](https://github.com/meloalright)        |
+
+
+有更多建议和想法 💡
+
+Create issues: [issues](https://github.com/rustq/3body-lang/issues)
+
 
 ## License
 
