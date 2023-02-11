@@ -1,7 +1,7 @@
-![cover](https://user-images.githubusercontent.com/11075892/218180169-2d7a5c71-9e05-44af-ab8f-aa327a2aae43.png)
+# 3Body Lang
 
-
-# 3body-lang
+[![Package version](https://img.shields.io/crates/v/three_body_lang.svg)](https://crates.io/crates/three_body_lang)
+[![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://github.com/rustq/three_body_lang/blob/master/LICENSE)
 
 三体编程语言 Three Body Language written in Rust
 
@@ -9,7 +9,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 
 Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
-## Try 3body-lang !
+## Try 3Body Lang !
 
 ### With REPL
 
@@ -20,7 +20,7 @@ Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ![playground](https://user-images.githubusercontent.com/11075892/218237993-c128c439-8048-406c-b043-0abcd33d4833.png)
 
-Working with Wasm!! 主很在乎 🤔
+Working with Wasm!! 主很在乎 👏🏻
 
 [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 

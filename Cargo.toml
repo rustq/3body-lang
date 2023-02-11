@@ -1,9 +1,11 @@
 cargo-features = ["named-profiles"]
 
 [package]
-name = "monkey"
-version = "0.1.0"
-authors = ["rustq"]
+name = "three_body_lang"
+description = "Three Body Language written in Rust"
+version = "0.0.1"
+authors = ["meloalright", "rustq"]
+license = "MIT"
 
 [dependencies]
 rustyline = { version = "8.0.0", optional = true }

@@ -1,13 +1,13 @@
-extern crate monkey;
+extern crate three_body_lang;
 
-use monkey::ast::Program;
-use monkey::evaluator::builtins::new_builtins;
-use monkey::evaluator::env::Env;
-use monkey::evaluator::object::Object;
-use monkey::evaluator::Evaluator;
-use monkey::formatter::Formatter;
-use monkey::lexer::Lexer;
-use monkey::parser::Parser;
+use three_body_lang::ast::Program;
+use three_body_lang::evaluator::builtins::new_builtins;
+use three_body_lang::evaluator::env::Env;
+use three_body_lang::evaluator::object::Object;
+use three_body_lang::evaluator::Evaluator;
+use three_body_lang::formatter::Formatter;
+use three_body_lang::lexer::Lexer;
+use three_body_lang::parser::Parser;
 use std::cell::RefCell;
 use std::ffi::{CStr, CString, c_uint};
 use std::mem;

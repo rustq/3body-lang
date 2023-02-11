@@ -1,13 +1,13 @@
-extern crate monkey;
+extern crate three_body_lang;
 extern crate rustyline;
 extern crate rustyline_derive;
 
-use monkey::evaluator::builtins::new_builtins;
-use monkey::evaluator::env::Env;
-use monkey::evaluator::Evaluator;
-use monkey::lexer::{is_whitespace, Lexer};
-use monkey::parser::{ParseError, Parser};
-use monkey::token::Token;
+use three_body_lang::evaluator::builtins::new_builtins;
+use three_body_lang::evaluator::env::Env;
+use three_body_lang::evaluator::Evaluator;
+use three_body_lang::lexer::{is_whitespace, Lexer};
+use three_body_lang::parser::{ParseError, Parser};
+use three_body_lang::token::Token;
 use std::borrow::Cow::{self, Borrowed, Owned};
 use std::cell::RefCell;
 use std::rc::Rc;

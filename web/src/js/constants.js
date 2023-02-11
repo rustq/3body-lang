@@ -2,7 +2,7 @@ export const SHARE_QUERY_KEY = 's';
 
 export const SNIPPETS = [
   {
-    label: 'Let',
+    label: 'Variable bindings',
     value: `给 岁月 以 "文明";
 
 岁月
