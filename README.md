@@ -3,50 +3,92 @@
 
 # 3body-lang
 
-> 三体语言 Three Body Language written in Rust
-> 
-> Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
-> 
-> Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
+三体编程语言 Three Body Language written in Rust
 
+Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
+
+Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
+
+## Try 3body-lang !
+
+### With REPL
+
+![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
+
+
+### With Online Playground
+
+![playground](https://user-images.githubusercontent.com/11075892/218237993-c128c439-8048-406c-b043-0abcd33d4833.png)
+
+Working with Wasm!! 主很在乎 🤔
+
+[https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## Syntax overview
 
-```rust
-给 岁月 以 "文明";
+### Variable bindings
+
+Variable bindings, such as those supported by many programming languages, are implemented. Variables can be defined using the let keyword.
+
+##### Format
+
+```
+给 <identifier> 以 <expression>;
 ```
 
+##### Example
+
 ```rust
+给 岁月 以 "文明";
+
 给 时光 以 "生命";
 ```
 
-#### 前进
+### Operators
+
+##### + 运算符
 
 ```rust
 给 自然选择 以 0;
 
 自然选择 前进 4
+
+// > 4
 ```
 
-#### 降维
+#### - 运算符
 
 ```rust
 给 宇宙 以 { "维度": 10 };
 
 宇宙["维度"] 降维 7
+
+// > 3
 ```
 
-#### 布尔值
+### Boolean
 
 ```rust
 return 这是计划的一部分
+
+// > true
 ```
 
 ```rust
 return 主不在乎
+
+// > false
 ```
 
-#### 函数定义
+### Function
+
+#### Format
+
+```
+法则 (<parameter one>, <parameter two>, ...) { <block statement> };
+```
+
+#### Example
 
 ```rust
 给 黑暗森林 以 法则() {
@@ -57,21 +99,41 @@ return 主不在乎
 黑暗森林()
 ```
 
-#### 输出
+## Built-in Functions
+
+### Print
+
+#### Format
+
+```
+广播(<arg1>, <arg2>, ...): void
+```
+
+#### Example
 
 ```rust
 给 三体世界坐标 以 "半人马星系";
 
 广播(三体世界坐标);
+
+// > "半人马星系"
 ```
 
-#### 休眠函数
+### Sleep
+
+#### Format
+
+```
+冬眠(<arg1>): void
+```
+
+#### Example
 
 ```rust
 冬眠(1000);
 ```
 
-#### 清屏
+### Clear
 
 ```rust
 二向箔清理();
@@ -102,3 +164,22 @@ $ cd 3body-lang
 
 $ make repl
 ```
+
+```
+$ make build_wasm
+```
+
+```
+$ make test
+```
+
+## Contributors
+
+| Author |
+| ----------- |
+| ![meloalright](https://avatars.githubusercontent.com/u/11075892?s=96&amp;v=4)       |
+| [meloalright](https://github.com/meloalright)        |
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
