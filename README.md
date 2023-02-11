@@ -1,7 +1,9 @@
 # 3body-lang
 
+[![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://opensource.org/licenses/MIT)
 [![Package version](https://img.shields.io/crates/v/three_body_lang.svg)](https://crates.io/crates/three_body_lang)
-[![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://github.com/rustq/three_body_lang/blob/master/LICENSE)
+[![Workflow](https://img.shields.io/github/actions/workflow/status/rustq/3body-lang/CI.yml?branch=main)](https://github.com/rustq/3body-lang/actions)
+
 
 三体编程语言 Three Body Language written in Rust
 
@@ -18,7 +20,7 @@ Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ### With Online Playground
 
-![playground](https://user-images.githubusercontent.com/11075892/218256580-454d2af5-827a-4d02-952f-831295338330.png)
+![playground](https://user-images.githubusercontent.com/11075892/218256821-376b9f89-46f7-40b2-9dcd-00baafa31891.png)
 
 Working with Wasm!! 主很在乎 👏🏻
 
@@ -193,18 +195,9 @@ $ make build_wasm
 $ make test
 ```
 
-## Contributors
-
-| Author |
-| ----------- |
-| [![meloalright](https://avatars.githubusercontent.com/u/11075892?s=96&amp;v=4)](https://github.com/meloalright)       |
-| [meloalright](https://github.com/meloalright)        |
-
-
 有更多建议和想法 💡
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
-
 
 ## License
 
