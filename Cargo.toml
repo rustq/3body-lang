@@ -19,6 +19,11 @@ path = "src/bin/main.rs"
 required-features = ["binaries"]
 
 [[bin]]
+name = "runtime"
+path = "src/runtime/main.rs"
+required-features = ["binaries"]
+
+[[bin]]
 name = "wasm"
 path = "src/wasm/main.rs"
 
