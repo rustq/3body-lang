@@ -21,9 +21,9 @@ jobs:
         components: clippy
         override: true
 
-    - name: Runtime
+    - name: Repl
       run: |
-        make runtime
+        make repl
         ./target/debug/runtime ./example/macroatom.3body
 
     - name: Test
