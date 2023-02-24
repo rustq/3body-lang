@@ -3,7 +3,7 @@ cargo-features = ["named-profiles"]
 [package]
 name = "three_body_lang"
 description = "Three Body Language written in Rust"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["meloalright", "rustq"]
 license = "MIT"
 
@@ -14,7 +14,7 @@ unicode-xid = { version = "0.2.1" }
 unicode-normalization = "0.1.8"
 
 [[bin]]
-name = "monkey"
+name = "runtime"
 path = "src/bin/main.rs"
 required-features = ["binaries"]
 

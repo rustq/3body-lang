@@ -27,4 +27,4 @@ web_deploy:
 
 .PHONY: repl
 repl:
-	cargo run --bin monkey --features="binaries"
+	cargo run --bin runtime --features="binaries"

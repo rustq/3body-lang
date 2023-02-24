@@ -188,6 +188,10 @@ $ make repl
 ```
 
 ```
+$ ./target/debug/runtime ./example/macroatom.3body
+```
+
+```
 $ make build_wasm
 ```
 

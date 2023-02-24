@@ -11,6 +11,9 @@ use three_body_lang::token::Token;
 use std::borrow::Cow::{self, Borrowed, Owned};
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::io::prelude::*;
+use std::fs::File;
+use std::env;
 
 use rustyline::completion::{Completer, Pair};
 use rustyline::error::ReadlineError;
@@ -157,6 +160,21 @@ fn main() {
     rl.set_helper(Some(h));
     rl.bind_sequence(KeyEvent::alt('n'), Cmd::HistorySearchForward);
     rl.bind_sequence(KeyEvent::alt('p'), Cmd::HistorySearchBackward);
+
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() > 1 {
+        let file_path = &args[1];
+        let file = file_path;
+        let mut file = File::open(file).expect("Unable to open the file");
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).expect("Unable to read the file");
+        let input = contents;
+        let mut parser = Parser::new(Lexer::new(&input));
+        let program = parser.parse();
+        evaluator.eval(&program);
+        return;
+    }
 
     println!("Feel free to type in commands\n");
 
