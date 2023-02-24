@@ -188,8 +188,6 @@ $ make repl
 ```
 
 ```
-$ make runtime
-
 $ ./target/debug/runtime ./example/macroatom.3body
 ```
 

@@ -14,13 +14,8 @@ unicode-xid = { version = "0.2.1" }
 unicode-normalization = "0.1.8"
 
 [[bin]]
-name = "monkey"
-path = "src/bin/main.rs"
-required-features = ["binaries"]
-
-[[bin]]
 name = "runtime"
-path = "src/runtime/main.rs"
+path = "src/bin/main.rs"
 required-features = ["binaries"]
 
 [[bin]]
