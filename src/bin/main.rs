@@ -162,7 +162,6 @@ fn main() {
     rl.bind_sequence(KeyEvent::alt('p'), Cmd::HistorySearchBackward);
 
     let args: Vec<String> = env::args().collect();
-    let query = &args[0];
 
     if args.len() > 1 {
         let file_path = &args[1];
