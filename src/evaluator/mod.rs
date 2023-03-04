@@ -65,6 +65,7 @@ impl Evaluator {
 
             match self.eval_stmt(stmt) {
                 Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
+                Some(Object::BreakStatement) => return Some(Object::BreakStatement),
                 Some(Object::Error(msg)) => return Some(Object::Error(msg)),
                 obj => result = obj,
             }
@@ -87,7 +88,10 @@ impl Evaluator {
                     self.env.borrow_mut().set(name.clone(), &value);
                     None
                 }
-            }
+            },
+            Stmt::Break => {
+                Some(Object::BreakStatement)
+            },
             Stmt::Expr(expr) => self.eval_expr(expr),
             Stmt::Return(expr) => {
                 let value = match self.eval_expr(expr) {
@@ -335,6 +339,11 @@ impl Evaluator {
             }
 
             result = self.eval_block_stmt(consequence);
+            match result {
+                Some(Object::BreakStatement) => break,
+                Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
+                _ => {}
+            }
         }
 
         result

@@ -2,6 +2,7 @@
 pub enum Token {
     Illegal,
     Blank,
+    Break,
     Eof,
 
     // Identifiers + literals
