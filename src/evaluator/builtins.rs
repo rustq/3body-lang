@@ -11,7 +11,7 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("push"), Object::Builtin(2, monkey_push));
     builtins.insert(String::from("广播"), Object::Builtin(1, three_body_puts));
     builtins.insert(String::from("二向箔清理"), Object::Builtin(0, three_body_clear));
-    builtins.insert(String::from("破壁"), Object::Builtin(0, three_body_exit));
+    builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
     builtins
 }

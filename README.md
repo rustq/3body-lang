@@ -103,6 +103,31 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 黑暗森林()
 ```
 
+### Loop
+
+##### Format
+
+```
+面壁 (<expression>) { <block statement>; 破壁; };
+```
+
+##### Example
+
+```rust
+给 面壁计划 以 法则() {
+    给 危机纪元 以 3;
+    面壁 (危机纪元 < 400) {
+        给 危机纪元 = 危机纪元 + 1;
+        广播(危机纪元);
+        if (危机纪元 == 205) {
+            破壁;
+        }
+    }
+}
+
+面壁计划()
+```
+
 ## Built-in Functions
 
 ### Print
@@ -156,13 +181,13 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ##### Format
 
 ```
-破壁(): void
+毁灭(): void
 ```
 
 ##### Example
 
 ```rust
-破壁();
+毁灭();
 ```
 
 ## Summary
@@ -176,10 +201,13 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |true|这是计划的一部分|"It's part of the plan."|
 |false|主不在乎|"The Lord doesn't care."|
 |fn|法则|"rule"|
+|while|面壁|"face the wall"|
+|break|破壁|"break the wall"|
 |print|广播|"broadcast"|
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
-|exit|破壁|"break the wall"|
+|exit|毁灭|"destroy"|
+
 
 ## Development
 

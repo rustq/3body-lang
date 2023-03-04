@@ -21,7 +21,7 @@ impl Evaluator {
 
     fn is_truthy(obj: Object) -> bool {
         match obj {
-            Object::Null | Object::Bool(false) | Object::Int(325) => false,
+            Object::Null | Object::Bool(false) => false,
             _ => true,
         }
     }
@@ -56,6 +56,24 @@ impl Evaluator {
     }
 
     fn eval_block_stmt(&mut self, stmts: &BlockStmt) -> Option<Object> {
+        let mut result = None;
+
+        for stmt in stmts {
+            if *stmt == Stmt::Blank {
+                continue;
+            }
+
+            match self.eval_stmt(stmt) {
+                Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
+                Some(Object::Error(msg)) => return Some(Object::Error(msg)),
+                obj => result = obj,
+            }
+        }
+
+        result
+    }
+
+    fn eval_block_stmt_with_continue_and_break_statement(&mut self, stmts: &BlockStmt) -> Option<Object> {
         let mut result = None;
 
         for stmt in stmts {
@@ -338,9 +356,12 @@ impl Evaluator {
                 break;
             }
 
-            result = self.eval_block_stmt(consequence);
+            result = self.eval_block_stmt_with_continue_and_break_statement(consequence);
             match result {
-                Some(Object::BreakStatement) => break,
+                Some(Object::BreakStatement) => {
+                    result = Some(Object::Null);
+                    break;
+                },
                 Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
                 _ => {}
             }
@@ -489,6 +510,21 @@ mod tests {
             (
                 "给 黑暗森林 以 法则() { 给 基本公理 以 [\"生存是文明的第一需要\", \"文明不断增长和扩张，但宇宙中的物质总量保持不变\"]; 基本公理 } 黑暗森林() ",
                 Some(Object::Array(vec![Object::String(String::from("生存是文明的第一需要")), Object::String(String::from("文明不断增长和扩张，但宇宙中的物质总量保持不变"))])),
+            ),
+            (
+                "给 面壁计划 以 法则() {
+                    给 危机纪元 以 3;
+                    面壁 (危机纪元 < 400) {
+                        给 危机纪元 = 危机纪元 + 1;
+                        广播(危机纪元);
+                        if (危机纪元 == 205) {
+                            破壁;
+                        }
+                    }
+                }
+                
+                面壁计划()",
+                Some(Object::Null),
             )
         ];
         
