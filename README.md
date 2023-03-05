@@ -120,7 +120,6 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
     面壁 (危机纪元 < 400) {
 
         给 危机纪元 = 危机纪元 + 1;
-        广播(["危机纪元", 危机纪元]);
 
         if (危机纪元 == 8) {
             给 人数 以 人数 - 1;
@@ -134,7 +133,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
             给 人数 以 人数 - 1;
         }
 
-        广播(["人数", 人数]);
+        广播([危机纪元, 人数]);
 
         if (危机纪元 == 205) {
             破壁;
