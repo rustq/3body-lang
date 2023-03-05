@@ -2,7 +2,6 @@
 pub enum Token {
     Illegal,
     Blank,
-    Break,
     Eof,
 
     // Identifiers + literals
@@ -16,6 +15,8 @@ pub enum Token {
     If,
     Else,
     While,
+    Break,
+    Continue,
 
     // Operators
     Plus,

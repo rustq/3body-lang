@@ -108,7 +108,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ##### Format
 
 ```
-面壁 (<expression>) { <block statement>; 破壁; };
+面壁 (<expression>) { <block statement> };
 ```
 
 ##### Example
@@ -116,9 +116,26 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ```rust
 给 面壁计划 以 法则() {
     给 危机纪元 以 3;
+    给 人数 以 4;
     面壁 (危机纪元 < 400) {
+
         给 危机纪元 = 危机纪元 + 1;
-        广播(危机纪元);
+        广播(["危机纪元", 危机纪元]);
+
+        if (危机纪元 == 8) {
+            给 人数 以 人数 - 1;
+            延续;
+        }
+        if (危机纪元 == 23) {
+            给 人数 以 人数 - 1;
+            延续;
+        }
+        if (危机纪元 == 205) {
+            给 人数 以 人数 - 1;
+        }
+
+        广播(["人数", 人数]);
+
         if (危机纪元 == 205) {
             破壁;
         }
@@ -203,6 +220,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |fn|法则|"rule"|
 |while|面壁|"face the wall"|
 |break|破壁|"break the wall"|
+|continue|延续、延绪|"continue"|
 |print|广播|"broadcast"|
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|

@@ -84,6 +84,7 @@ impl Evaluator {
             match self.eval_stmt(stmt) {
                 Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
                 Some(Object::BreakStatement) => return Some(Object::BreakStatement),
+                Some(Object::ContinueStatement) => return Some(Object::ContinueStatement),
                 Some(Object::Error(msg)) => return Some(Object::Error(msg)),
                 obj => result = obj,
             }
@@ -362,6 +363,10 @@ impl Evaluator {
                     result = Some(Object::Null);
                     break;
                 },
+                Some(Object::ContinueStatement) => {
+                    result = Some(Object::Null);
+                    continue;
+                },
                 Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
                 _ => {}
             }
@@ -514,9 +519,26 @@ mod tests {
             (
                 "给 面壁计划 以 法则() {
                     给 危机纪元 以 3;
+                    给 人数 以 4;
                     面壁 (危机纪元 < 400) {
+
                         给 危机纪元 = 危机纪元 + 1;
-                        广播(危机纪元);
+                        广播([\"危机纪元\", 危机纪元]);
+
+                        if (危机纪元 == 8) {
+                            给 人数 以 人数 - 1;
+                            延续;
+                        }
+                        if (危机纪元 == 23) {
+                            给 人数 以 人数 - 1;
+                            延续;
+                        }
+                        if (危机纪元 == 205) {
+                            给 人数 以 人数 - 1;
+                        }
+
+                        广播([\"人数\", 人数]);
+
                         if (危机纪元 == 205) {
                             破壁;
                         }

@@ -104,6 +104,7 @@ impl Formatter {
             Stmt::Let(ident, expr) => self.format_let_stmt(ident, expr),
             Stmt::Return(expr) => self.format_return_stmt(expr),
             Stmt::Break => String::from("break;"),
+            Stmt::Continue => String::from("continue;"),
             Stmt::Expr(expr) => {
                 if Self::ignore_semicolon_expr(&expr) {
                     self.format_expr(expr, Precedence::Lowest)

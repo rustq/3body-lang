@@ -90,6 +90,7 @@ pub enum Literal {
 pub enum Stmt {
     Blank,
     Break,
+    Continue,
     Let(Ident, Expr),
     Return(Expr),
     Expr(Expr),
