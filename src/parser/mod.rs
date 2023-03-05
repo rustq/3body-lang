@@ -143,6 +143,8 @@ impl Parser {
         match self.current_token {
             Token::Let => self.parse_let_stmt(),
             Token::Return => self.parse_return_stmt(),
+            Token::Break => self.parse_break_stmt(),
+            Token::Continue => self.parse_continue_stmt(),
             Token::Blank => Some(Stmt::Blank),
             _ => self.parse_expr_stmt(),
         }
@@ -175,6 +177,26 @@ impl Parser {
         }
 
         Some(Stmt::Let(name, expr))
+    }
+
+    fn parse_break_stmt(&mut self) -> Option<Stmt> {
+        self.bump();
+
+        if self.next_token_is(&Token::Semicolon) {
+            self.bump();
+        }
+
+        Some(Stmt::Break)
+    }
+
+    fn parse_continue_stmt(&mut self) -> Option<Stmt> {
+        self.bump();
+
+        if self.next_token_is(&Token::Semicolon) {
+            self.bump();
+        }
+
+        Some(Stmt::Continue)
     }
 
     fn parse_return_stmt(&mut self) -> Option<Stmt> {

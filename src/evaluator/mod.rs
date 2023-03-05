@@ -21,7 +21,7 @@ impl Evaluator {
 
     fn is_truthy(obj: Object) -> bool {
         match obj {
-            Object::Null | Object::Bool(false) | Object::Int(325) => false,
+            Object::Null | Object::Bool(false) => false,
             _ => true,
         }
     }
@@ -73,6 +73,26 @@ impl Evaluator {
         result
     }
 
+    fn eval_block_stmt_with_continue_and_break_statement(&mut self, stmts: &BlockStmt) -> Option<Object> {
+        let mut result = None;
+
+        for stmt in stmts {
+            if *stmt == Stmt::Blank {
+                continue;
+            }
+
+            match self.eval_stmt(stmt) {
+                Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
+                Some(Object::BreakStatement) => return Some(Object::BreakStatement),
+                Some(Object::ContinueStatement) => return Some(Object::ContinueStatement),
+                Some(Object::Error(msg)) => return Some(Object::Error(msg)),
+                obj => result = obj,
+            }
+        }
+
+        result
+    }
+
     fn eval_stmt(&mut self, stmt: &Stmt) -> Option<Object> {
         match stmt {
             Stmt::Let(ident, expr) => {
@@ -87,7 +107,10 @@ impl Evaluator {
                     self.env.borrow_mut().set(name.clone(), &value);
                     None
                 }
-            }
+            },
+            Stmt::Break => {
+                Some(Object::BreakStatement)
+            },
             Stmt::Expr(expr) => self.eval_expr(expr),
             Stmt::Return(expr) => {
                 let value = match self.eval_expr(expr) {
@@ -334,7 +357,19 @@ impl Evaluator {
                 break;
             }
 
-            result = self.eval_block_stmt(consequence);
+            result = self.eval_block_stmt_with_continue_and_break_statement(consequence);
+            match result {
+                Some(Object::BreakStatement) => {
+                    result = Some(Object::Null);
+                    break;
+                },
+                Some(Object::ContinueStatement) => {
+                    result = Some(Object::Null);
+                    continue;
+                },
+                Some(Object::ReturnValue(value)) => return Some(Object::ReturnValue(value)),
+                _ => {}
+            }
         }
 
         result
@@ -480,6 +515,38 @@ mod tests {
             (
                 "给 黑暗森林 以 法则() { 给 基本公理 以 [\"生存是文明的第一需要\", \"文明不断增长和扩张，但宇宙中的物质总量保持不变\"]; 基本公理 } 黑暗森林() ",
                 Some(Object::Array(vec![Object::String(String::from("生存是文明的第一需要")), Object::String(String::from("文明不断增长和扩张，但宇宙中的物质总量保持不变"))])),
+            ),
+            (
+                "给 面壁计划 以 法则() {
+                    给 危机纪元 以 3;
+                    给 人数 以 4;
+                    面壁 (危机纪元 < 400) {
+
+                        给 危机纪元 = 危机纪元 + 1;
+                        广播([\"危机纪元\", 危机纪元]);
+
+                        if (危机纪元 == 8) {
+                            给 人数 以 人数 - 1;
+                            延续;
+                        }
+                        if (危机纪元 == 23) {
+                            给 人数 以 人数 - 1;
+                            延续;
+                        }
+                        if (危机纪元 == 205) {
+                            给 人数 以 人数 - 1;
+                        }
+
+                        广播([\"人数\", 人数]);
+
+                        if (危机纪元 == 205) {
+                            破壁;
+                        }
+                    }
+                }
+                
+                面壁计划()",
+                Some(Object::Null),
             )
         ];
         

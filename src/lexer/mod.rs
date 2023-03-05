@@ -252,6 +252,11 @@ impl Lexer {
             "while" => Token::While,
             "else" => Token::Else,
             "return" => Token::Return,
+            "break" => Token::Break,
+            "continue" => Token::Continue,
+            "面壁" => Token::While,
+            "破壁" => Token::Break,
+            "延绪" => Token::Continue,
             _ => Token::Ident(nfc_normalize(&literal)),
         }
     }
