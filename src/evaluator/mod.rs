@@ -546,7 +546,11 @@ mod tests {
                 
                 面壁计划()",
                 Some(Object::Null),
-            )
+            ),
+            (
+                "let 球闪 = 引入(\"./example/ball_lightning\"); 球闪[\"攻击\"]()",
+                Some(Object::Int(0)),
+            ),
         ];
         
 

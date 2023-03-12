@@ -1,0 +1,11 @@
+let 宏原子 = import("./example/macroatom");
+
+if (宏原子["获取_激发态"]()["status"]) {
+    let 球状闪电 = {
+        "攻击": fn () { return 0; }
+    };
+    球状闪电
+}
+else {
+    0
+}
