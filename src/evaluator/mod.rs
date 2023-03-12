@@ -548,8 +548,8 @@ mod tests {
                 Some(Object::Null),
             ),
             (
-                "let 球闪 = 引入(\"./example/ball_lightning\"); 球闪[\"攻击\"]()",
-                Some(Object::Int(0)),
+                "let 球闪 = 引入(\"./example/ball_lightning\");",
+                None,
             ),
         ];
         
