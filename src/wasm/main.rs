@@ -1,5 +1,7 @@
 extern crate three_body_lang;
 
+extern crate rand;
+
 use three_body_lang::ast::Program;
 use three_body_lang::evaluator::builtins::new_builtins;
 use three_body_lang::evaluator::env::Env;
@@ -20,6 +22,7 @@ extern "C" {
     fn print(input_ptr: *mut c_char);
     fn sleep(secs: c_uint) -> c_uint;
     fn clear() -> c_void;
+    fn random(input_uint: c_uint) -> c_uint;
 }
 
 fn internal_print(msg: &str) {
@@ -39,6 +42,13 @@ fn internal_clear() {
         clear();
     }
 }
+
+fn internal_random(input: &i64) -> u32 {
+    unsafe {
+        random(*input as u32)
+    }
+}
+
 
 
 fn string_to_ptr(s: String) -> *mut c_char {
@@ -115,6 +125,19 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
         &Object::Builtin(-1, |_args| {
             internal_clear();
             Object::Null
+        }),
+    );
+
+    env.set(
+        String::from("random"),
+        &Object::Builtin(-1, |args| {
+            match &args[0] {
+                Object::Int(o) => {
+                    let n = internal_random(o) as i64;
+                    Object::Int(n)
+                },
+                _ => Object::Null
+            }
         }),
     );
 

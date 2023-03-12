@@ -11,6 +11,9 @@ use std::convert::TryInto;
 use lexer::Lexer;
 use parser::Parser;
 
+extern crate rand;
+use evaluator::builtins::rand::{thread_rng, Rng};
+use evaluator::builtins::rand::distributions::Uniform;
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -25,6 +28,7 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
     builtins.insert(String::from("import"), Object::Builtin(1, three_body_import));
     builtins.insert(String::from("引入"), Object::Builtin(1, three_body_import));
+    builtins.insert(String::from("random"), Object::Builtin(1, three_body_random));
     builtins
 }
 
@@ -137,3 +141,21 @@ fn three_body_import(args: Vec<Object>) -> Object {
         _ => Object::Null
     }
 }
+
+#[cfg(target_arch = "wasm32")]
+fn three_body_random(args: Vec<Object>) -> Object {
+    Object::Null
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn three_body_random(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Int(o) => {
+            let mut rng = thread_rng();
+            let n = rng.sample::<i64, _>(Uniform::new(0, *o));
+            Object::Int(n)
+        },
+        _ => Object::Null
+    }
+}
+
