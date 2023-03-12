@@ -546,7 +546,11 @@ mod tests {
                 
                 面壁计划()",
                 Some(Object::Null),
-            )
+            ),
+            (
+                "let 球闪 = import(\"./example/ball_lightning\");",
+                None,
+            ),
         ];
         
 

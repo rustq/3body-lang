@@ -21,4 +21,7 @@ Module.load('./monkey.wasm', {
   clear: () => {
     Command.clear();
   },
+  random: (input) => {
+    return Math.floor(Math.random() * input)
+  },
 }).catch((e) => console.error(e));

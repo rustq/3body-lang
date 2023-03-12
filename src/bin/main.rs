@@ -169,8 +169,7 @@ fn main() {
         let mut file = File::open(file).expect("Unable to open the file");
         let mut contents = String::new();
         file.read_to_string(&mut contents).expect("Unable to read the file");
-        let input = contents;
-        let mut parser = Parser::new(Lexer::new(&input));
+        let mut parser = Parser::new(Lexer::new(&contents));
         let program = parser.parse();
         evaluator.eval(&program);
         return;

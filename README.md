@@ -19,7 +19,7 @@ Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ### With Runtime
 
-![carbon-2](https://user-images.githubusercontent.com/11075892/221342321-3f12fe35-df54-45a4-9b20-c9a57681ff64.png)
+![carbon-2](https://user-images.githubusercontent.com/11075892/224553616-f7c74fcd-9b27-4535-9c8b-a0385ef4f062.png)
 
 
 ### With Online Playground

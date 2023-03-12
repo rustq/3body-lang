@@ -1,6 +1,19 @@
+use evaluator::Evaluator;
+use evaluator::env::Env;
 use evaluator::object::*;
+use std::io::prelude::*;
+use std::cell::RefCell;
+use std::fs::File;
+use std::rc::Rc;
 use std::collections::HashMap;
 use std::convert::TryInto;
+
+use lexer::Lexer;
+use parser::Parser;
+
+extern crate rand;
+use evaluator::builtins::rand::{thread_rng, Rng};
+use evaluator::builtins::rand::distributions::Uniform;
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -13,6 +26,8 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("二向箔清理"), Object::Builtin(0, three_body_clear));
     builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
+    builtins.insert(String::from("import"), Object::Builtin(1, three_body_import));
+    builtins.insert(String::from("random"), Object::Builtin(1, three_body_random));
     builtins
 }
 
@@ -100,3 +115,46 @@ fn three_body_sleep(args: Vec<Object>) -> Object {
         _ => Object::Null
     }
 }
+
+fn three_body_import(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::String(o) => {
+            let mut file = File::open(format!("{o}.3body"),).expect("Unable to open the file");
+            let mut contents = String::new();
+
+            file.read_to_string(&mut contents).expect("Unable to read the file");
+
+            let mut parser = Parser::new(Lexer::new(&contents));
+            let program = parser.parse();
+
+            let env = Env::from(new_builtins());
+            let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
+
+            let result = evaluator.eval(&program);
+
+            match result {
+                Some(obj) => return obj,
+                _ => return Object::Null
+            };
+        },
+        _ => Object::Null
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+fn three_body_random(args: Vec<Object>) -> Object {
+    Object::Null
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn three_body_random(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Int(o) => {
+            let mut rng = thread_rng();
+            let n = rng.sample::<i64, _>(Uniform::new(0, *o));
+            Object::Int(n)
+        },
+        _ => Object::Null
+    }
+}
+
