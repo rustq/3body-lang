@@ -548,8 +548,12 @@ mod tests {
                 Some(Object::Null),
             ),
             (
-                "let 球闪 = import(\"./example/ball_lightning\");",
-                None,
+                "let n = random(10); n < 10",
+                Some(Object::Bool(true)),
+            ),
+            (
+                "let 球闪 = import(\"./example/ball_lightning\"); 球闪[\"攻击\"]()",
+                Some(Object::Int(1)),
             ),
         ];
         

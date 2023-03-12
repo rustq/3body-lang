@@ -3,7 +3,7 @@ cargo-features = ["named-profiles"]
 [package]
 name = "three_body_lang"
 description = "Three Body Language written in Rust"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["meloalright", "rustq"]
 license = "MIT"
 
