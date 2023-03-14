@@ -1,0 +1,9 @@
+let rand = import("./system/3body/rand");
+
+let 恒纪元 = rand["custom"](1);
+
+let suns = 恒纪元["getSuns"]();
+
+广播(suns);
+广播("太阳就要落山了，你们的孩子不害怕吗？");
+广播("当然不会，因为他们知道太阳明天还会升起来了。");

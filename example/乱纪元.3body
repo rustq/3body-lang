@@ -1,0 +1,13 @@
+let rand = import("./system/3body/rand");
+
+let 乱纪元 = rand["default"]();
+
+let suns = 乱纪元["getSuns"]();
+
+广播(suns);
+
+if (suns == 1) {
+    广播("浸泡！");
+} else {
+    广播("脱水！");
+}
