@@ -1,8 +1,8 @@
-let rand = import("./system/3body/rand");
+给 rand 以 import("./system/3body/rand");
 
-let 乱纪元 = rand["default"]();
+给 乱纪元 以 rand["default"]();
 
-let suns = 乱纪元["getSuns"]();
+给 suns 以 乱纪元["getSuns"]();
 
 广播(suns);
 
