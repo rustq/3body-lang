@@ -9,7 +9,7 @@
 
 Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
-Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
+Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ## Try 3body-lang
 
@@ -19,7 +19,7 @@ Base on [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
 
 ### With Runtime
 
-![carbon-2](https://user-images.githubusercontent.com/11075892/224553616-f7c74fcd-9b27-4535-9c8b-a0385ef4f062.png)
+![carbon-2](https://user-images.githubusercontent.com/11075892/225037791-1175a8df-d306-4de0-9d62-27f9591a9d99.png)
 
 
 ### With Online Playground
@@ -144,6 +144,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 面壁计划()
 ```
 
+
 ## Built-in Functions
 
 ### Print
@@ -224,6 +225,11 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
+
+
+## System Libraries
+
+[rand](system/3body/README.md#rand)
 
 
 ## Development

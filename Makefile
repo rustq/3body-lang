@@ -28,3 +28,8 @@ web_deploy:
 .PHONY: repl
 repl:
 	cargo run --bin runtime --features="binaries"
+
+.PHONY: example
+example:
+	./target/debug/runtime ./example/乱纪元.3body
+	./target/debug/runtime ./example/地球.3body
