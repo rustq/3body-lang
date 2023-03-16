@@ -24,8 +24,10 @@ jobs:
     - name: Repl
       run: |
         make repl
-        ./target/debug/runtime ./example/macroatom.3body
-        ./target/debug/runtime ./example/ball_lightning.3body
 
     - name: Test
       run: make test
+
+    - name: Example
+      run: |
+        make example

@@ -552,7 +552,11 @@ mod tests {
                 Some(Object::Bool(true)),
             ),
             (
-                "let 球闪 = import(\"./example/ball_lightning\"); 球闪[\"攻击\"]()",
+                "let rand = import(\"./system/3body/rand\"); rand[\"default\"]()[\"getSuns\"]() <= 3",
+                Some(Object::Bool(true)),
+            ),
+            (
+                "let rand = import(\"./system/3body/rand\"); rand[\"custom\"](1)[\"getSuns\"]()",
                 Some(Object::Int(1)),
             ),
         ];
