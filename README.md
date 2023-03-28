@@ -119,7 +119,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
     给 人数 以 4;
     面壁 (危机纪元 < 400) {
 
-        给 危机纪元 = 危机纪元 + 1;
+        给 危机纪元 以 危机纪元 + 1;
 
         if (危机纪元 == 8) {
             给 人数 以 人数 - 1;
