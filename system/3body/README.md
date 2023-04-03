@@ -30,3 +30,13 @@ Default to be Chaotic Era, custom to be Stable Era.
 
 恒纪元["getSuns"](); // 1
 ```
+
+##源码解读  (Source code interpretation)
+
+
+###目录结构
+
+
+
+
+

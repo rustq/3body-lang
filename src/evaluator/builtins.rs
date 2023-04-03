@@ -1,19 +1,19 @@
-use evaluator::Evaluator;
 use evaluator::env::Env;
 use evaluator::object::*;
-use std::io::prelude::*;
+use evaluator::Evaluator;
 use std::cell::RefCell;
-use std::fs::File;
-use std::rc::Rc;
 use std::collections::HashMap;
 use std::convert::TryInto;
+use std::fs::File;
+use std::io::prelude::*;
+use std::rc::Rc;
 
 use lexer::Lexer;
 use parser::Parser;
 
 extern crate rand;
-use evaluator::builtins::rand::{thread_rng, Rng};
 use evaluator::builtins::rand::distributions::Uniform;
+use evaluator::builtins::rand::{thread_rng, Rng};
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -23,11 +23,20 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("rest"), Object::Builtin(1, monkey_rest));
     builtins.insert(String::from("push"), Object::Builtin(2, monkey_push));
     builtins.insert(String::from("广播"), Object::Builtin(1, three_body_puts));
-    builtins.insert(String::from("二向箔清理"), Object::Builtin(0, three_body_clear));
+    builtins.insert(
+        String::from("二向箔清理"),
+        Object::Builtin(0, three_body_clear),
+    );
     builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
-    builtins.insert(String::from("import"), Object::Builtin(1, three_body_import));
-    builtins.insert(String::from("random"), Object::Builtin(1, three_body_random));
+    builtins.insert(
+        String::from("import"),
+        Object::Builtin(1, three_body_import),
+    );
+    builtins.insert(
+        String::from("random"),
+        Object::Builtin(1, three_body_random),
+    );
     builtins
 }
 
@@ -111,18 +120,19 @@ fn three_body_sleep(args: Vec<Object>) -> Object {
             let duration = std::time::Duration::from_millis((*o).try_into().unwrap());
             std::thread::sleep(duration);
             Object::Null
-        },
-        _ => Object::Null
+        }
+        _ => Object::Null,
     }
 }
 
 fn three_body_import(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::String(o) => {
-            let mut file = File::open(format!("{o}.3body"),).expect("Unable to open the file");
+            let mut file = File::open(format!("{o}.3body")).expect("Unable to open the file");
             let mut contents = String::new();
 
-            file.read_to_string(&mut contents).expect("Unable to read the file");
+            file.read_to_string(&mut contents)
+                .expect("Unable to read the file");
 
             let mut parser = Parser::new(Lexer::new(&contents));
             let program = parser.parse();
@@ -134,10 +144,10 @@ fn three_body_import(args: Vec<Object>) -> Object {
 
             match result {
                 Some(obj) => return obj,
-                _ => return Object::Null
+                _ => return Object::Null,
             };
-        },
-        _ => Object::Null
+        }
+        _ => Object::Null,
     }
 }
 
@@ -153,8 +163,39 @@ fn three_body_random(args: Vec<Object>) -> Object {
             let mut rng = thread_rng();
             let n = rng.sample::<i64, _>(Uniform::new(0, *o));
             Object::Int(n)
-        },
-        _ => Object::Null
+        }
+        _ => Object::Null,
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_monkey_len_string() {
+        let args = vec![Object::String(String::from("hello"))];
+        let expected = Object::Int(5);
+        assert_eq!(monkey_len(args), expected);
+    }
+
+    #[test]
+    fn test_monkey_len_array() {
+        let args = vec![Object::Array(vec![
+            Object::Int(1),
+            Object::Int(2),
+            Object::Int(3),
+        ])];
+        let expected = Object::Int(3);
+        assert_eq!(monkey_len(args), expected);
+    }
+
+    #[test]
+    fn test_monkey_len_error() {
+        let args = vec![Object::Bool(true)];
+        let expected = Object::Error(String::from(
+            "argument to `len` not supported, got Boolean(true)",
+        ));
+        assert_ne!(monkey_len(args), expected);
+    }
+}
