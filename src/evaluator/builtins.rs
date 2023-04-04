@@ -209,11 +209,41 @@ mod tests {
 
         let args = vec![Object::Array(vec![])];
         assert_eq!(monkey_first(args), Object::Null);
-
         let args = vec![Object::Int(1)];
         assert_eq!(
             monkey_first(args),
             Object::Error("argument to `first` must be array. got 1".to_string())
         );
+    }
+
+    #[test]
+    fn test_monkey_last() {
+        let arr = vec![Object::Int(1), Object::Int(2), Object::Int(3)];
+        let args = vec![Object::Array(arr)];
+        assert_eq!(monkey_last(args), Object::Int(3));
+    }
+
+    #[test]
+    fn test_monkey_rest() {
+        let tests = vec![
+            (
+                vec![Object::Array(vec![Object::Int(1), Object::Int(2)])],
+                Object::Array(vec![Object::Int(2)]),
+            ),
+            (
+                vec![Object::Array(vec![Object::Int(1)])],
+                Object::Array(vec![]),
+            ),
+            (vec![Object::Array(vec![])], Object::Null),
+            (
+                vec![Object::Int(1)],
+                Object::Error("argument to `rest` must be array. got 1".to_string()),
+            ),
+        ];
+
+        for (input, expected) in tests {
+            let got = monkey_rest(input);
+            assert_eq!(got, expected);
+        }
     }
 }
