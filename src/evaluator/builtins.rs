@@ -225,6 +225,8 @@ mod tests {
 
     #[test]
     fn test_monkey_rest() {
+        //    它包含了多组测试用例，每组测试用例包含了一个输入值 input 和一个预期值 expected。变量 tests 是一个包含多个元组 (input, expected) 的 Vec 类型变量。
+
         let tests = vec![
             (
                 vec![Object::Array(vec![Object::Int(1), Object::Int(2)])],
@@ -245,5 +247,23 @@ mod tests {
             let got = monkey_rest(input);
             assert_eq!(got, expected);
         }
+    }
+
+    #[test]
+    fn test_monkey_push() {
+        let arr = vec![Object::Int(1), Object::Int(2)];
+        let args = vec![Object::Array(arr), Object::Int(3)];
+        let expected = Object::Array(vec![Object::Int(1), Object::Int(2), Object::Int(3)]);
+        assert_eq!(monkey_push(args), expected);
+    }
+
+    #[test]
+    fn test_three_body_puts() {
+        let args = vec![
+            Object::Int(1),
+            Object::Bool(true),
+            Object::String("hello".to_string()),
+        ];
+        assert_eq!(three_body_puts(args), Object::Null);
     }
 }
