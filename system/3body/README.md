@@ -24,7 +24,6 @@ Default to be Chaotic Era, custom to be Stable Era.
 乱纪元["getSuns"]() // 0 | 1 | 2 | 3
 ```
 
-
 ```rust
 给 恒纪元 以 rand["custom"](1);
 
