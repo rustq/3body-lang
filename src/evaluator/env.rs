@@ -42,3 +42,45 @@ impl Env {
         self.store.insert(name, value.clone());
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_env_new() {
+        let env = Env::new();
+        assert_eq!(env.store.len(), 0);
+        assert_eq!(env.outer, None);
+    }
+
+    #[test]
+    fn test_env_from() {
+        let mut store = HashMap::new();
+        store.insert("key".to_string(), Object::Int(1));
+        let env = Env::from(store);
+        assert_eq!(env.store.len(), 1);
+        assert_eq!(env.outer, None);
+    }
+
+    #[test]
+    fn test_env_new_with_outer() {
+        let outer = Rc::new(RefCell::new(Env::new()));
+        let env = Env::new_with_outer(outer.clone());
+        assert_eq!(env.store.len(), 0);
+        assert_eq!(env.outer, Some(outer));
+    }
+
+    #[test]
+    fn test_env_get() {
+        let mut env = Env::new();
+        env.set("key".to_string(), &Object::Int(1));
+        assert_eq!(env.get("key".to_string()), Some(Object::Int(1)));
+    }
+
+    #[test]
+    fn test_env_set() {
+        let mut env = Env::new();
+        env.set("key".to_string(), &Object::Int(1));
+        assert_eq!(env.store.get("key"), Some(&Object::Int(1)));
+    }
+}
