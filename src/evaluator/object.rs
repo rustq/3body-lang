@@ -96,14 +96,14 @@ mod tests {
 
     #[test]
     fn test_object_int() {
-        let obj = Object::Int(42);
-        assert_eq!(obj.to_string(), "42");
+        let obj = Object::Int(520);
+        assert_eq!(obj.to_string(), "520");
     }
 
     #[test]
     fn test_object_string() {
-        let obj = Object::String("hello".to_string());
-        assert_eq!(obj.to_string(), "\"hello\"");
+        let obj = Object::String("woshiaf".to_string());
+        assert_eq!(obj.to_string(), "\"woshiaf\"");
     }
 
     #[test]
@@ -121,10 +121,11 @@ mod tests {
     #[test]
     fn test_object_hash() {
         let mut hash = HashMap::new();
-        hash.insert(Object::String("foo".to_string()), Object::Int(42));
-        hash.insert(Object::String("bar".to_string()), Object::Int(1337));
+        hash.insert(Object::String("a".to_string()), Object::Int(1));
+        hash.insert(Object::String("b".to_string()), Object::Int(2));
+
         let obj = Object::Hash(hash);
-        assert_eq!(obj.to_string(), "{\"foo\": 42, \"bar\": 1337}");
+        assert_eq!(obj.to_string(), "{\"a\": 1, \"b\": 2}");
     }
 
     #[test]
@@ -139,6 +140,7 @@ mod tests {
 
     #[test]
     fn test_object_builtin() {
+        // rust的闭包机制  |args| Object::Int(args.len() as i64)
         let obj = Object::Builtin(0, |args| Object::Int(args.len() as i64));
         assert_eq!(obj.to_string(), "[builtin function]");
     }
