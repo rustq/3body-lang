@@ -89,3 +89,90 @@ impl Hash for Object {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_object_int() {
+        let obj = Object::Int(520);
+        assert_eq!(obj.to_string(), "520");
+    }
+
+    #[test]
+    fn test_object_string() {
+        let obj = Object::String("woshiaf".to_string());
+        assert_eq!(obj.to_string(), "\"woshiaf\"");
+    }
+
+    #[test]
+    fn test_object_bool() {
+        let obj = Object::Bool(true);
+        assert_eq!(obj.to_string(), "true");
+    }
+
+    #[test]
+    fn test_object_array() {
+        let obj = Object::Array(vec![Object::Int(1), Object::Int(2), Object::Int(3)]);
+        assert_eq!(obj.to_string(), "[1, 2, 3]");
+    }
+
+    #[test]
+    fn test_object_hash() {
+        let mut hash = HashMap::new();
+        hash.insert(Object::String("a".to_string()), Object::Int(1));
+        hash.insert(Object::String("c".to_string()), Object::Int(2));
+        hash.insert(Object::String("b".to_string()), Object::Int(3));
+
+        let obj = Object::Hash(hash);
+        assert_eq!(obj.to_string(), "{\"c\": 2, \"b\": 3, \"a\": 1}");
+    }
+
+    #[test]
+    fn test_object_func() {
+        let obj = Object::Func(
+            vec![Ident("x".to_string()), Ident("y".to_string())],
+            vec![],
+            Rc::new(RefCell::new(Env::new())),
+        );
+        assert_eq!(format!("{}", obj), "fn(x, y) { ... }");
+    }
+
+    #[test]
+    fn test_object_builtin() {
+        // rust的闭包机制  |args| Object::Int(args.len() as i64)
+        let obj = Object::Builtin(0, |args| Object::Int(args.len() as i64));
+        assert_eq!(obj.to_string(), "[builtin function]");
+    }
+
+    #[test]
+    fn test_object_null() {
+        let obj = Object::Null;
+        assert_eq!(obj.to_string(), "null");
+    }
+
+    #[test]
+    fn test_object_break() {
+        let obj = Object::BreakStatement;
+        assert_eq!(obj.to_string(), "BreakStatement");
+    }
+
+    #[test]
+    fn test_object_continue() {
+        let obj = Object::ContinueStatement;
+        assert_eq!(obj.to_string(), "ContinueStatement");
+    }
+
+    #[test]
+    fn test_object_return_value() {
+        let obj = Object::ReturnValue(Box::new(Object::Int(42)));
+        assert_eq!(obj.to_string(), "ReturnValue(42)");
+    }
+
+    #[test]
+    fn test_object_error() {
+        let obj = Object::Error("something went wrong".to_string());
+        assert_eq!(obj.to_string(), "Error(something went wrong)");
+    }
+}
