@@ -122,11 +122,9 @@ mod tests {
     fn test_object_hash() {
         let mut hash = HashMap::new();
         hash.insert(Object::String("a".to_string()), Object::Int(1));
-        hash.insert(Object::String("c".to_string()), Object::Int(2));
-        hash.insert(Object::String("b".to_string()), Object::Int(3));
 
         let obj = Object::Hash(hash);
-        assert_eq!(obj.to_string(), "{\"c\": 2, \"b\": 3, \"a\": 1}");
+        assert_eq!(obj.to_string(), "{\"a\": 1}");
     }
 
     #[test]

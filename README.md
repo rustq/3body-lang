@@ -207,6 +207,20 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 毁灭();
 ```
 
+### Request
+
+##### Format
+
+```
+寻找(<arg1>): void
+```
+
+##### Example
+
+```rust
+给 A 以 寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/LICENSE");
+```
+
 ## Summary
 
 |Monkey|3body-lang|Explanation|
@@ -225,6 +239,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
+|request|寻找|"search"|
 
 
 ## System Libraries
@@ -243,7 +258,7 @@ $ make repl
 ```
 
 ```
-$ ./target/debug/runtime ./example/macroatom.3body
+$ ./target/debug/runtime ./example/地球.3body
 ```
 
 ```

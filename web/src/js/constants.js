@@ -95,4 +95,11 @@ true
     value: `二向箔清理();
 `,
   },
+  {
+    label: 'Request',
+    value: `给 A 以 寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/LICENSE");
+
+A
+`,
+  },
 ];

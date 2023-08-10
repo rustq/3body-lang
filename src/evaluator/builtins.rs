@@ -12,6 +12,8 @@ use lexer::Lexer;
 use parser::Parser;
 
 extern crate rand;
+#[cfg(not(target_arch = "wasm32"))]
+extern crate reqwest;
 use evaluator::builtins::rand::distributions::Uniform;
 use evaluator::builtins::rand::{thread_rng, Rng};
 
@@ -23,6 +25,8 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("rest"), Object::Builtin(1, monkey_rest));
     builtins.insert(String::from("push"), Object::Builtin(2, monkey_push));
     builtins.insert(String::from("广播"), Object::Builtin(1, three_body_puts));
+    #[cfg(not(target_arch = "wasm32"))]
+    builtins.insert(String::from("寻找"), Object::Builtin(1, three_body_request));
     builtins.insert(
         String::from("二向箔清理"),
         Object::Builtin(0, three_body_clear),
@@ -103,6 +107,24 @@ fn three_body_puts(args: Vec<Object>) -> Object {
         println!("{}", arg);
     }
     Object::Null
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn three_body_request(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::String(o) => {
+            let resp = reqwest::blocking::get(o);
+            match resp {
+                Ok(res) => {
+                    Object::String(res.text().expect("should be text"))
+                },
+                Err(error) => {
+                    Object::Error(format!("request got {}", error))
+                }
+            }
+        }
+        _ => Object::Null,
+    }
 }
 
 fn three_body_clear(_args: Vec<Object>) -> Object {
