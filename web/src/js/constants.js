@@ -97,9 +97,7 @@ true
   },
   {
     label: 'Request',
-    value: `给 A 以 寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/LICENSE");
-
-A
+    value: `寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
 `,
   },
 ];

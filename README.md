@@ -218,7 +218,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ##### Example
 
 ```rust
-给 A 以 寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/LICENSE");
+寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
 ```
 
 ## Summary
