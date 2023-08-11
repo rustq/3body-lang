@@ -95,4 +95,9 @@ true
     value: `二向箔清理();
 `,
   },
+  {
+    label: 'Request',
+    value: `寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
+`,
+  },
 ];

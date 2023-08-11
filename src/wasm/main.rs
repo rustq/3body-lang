@@ -23,6 +23,7 @@ extern "C" {
     fn sleep(secs: c_uint) -> c_uint;
     fn clear() -> c_void;
     fn random(input_uint: c_uint) -> c_uint;
+    fn request(url: *mut c_char) -> *mut c_char;
 }
 
 fn internal_print(msg: &str) {
@@ -49,6 +50,13 @@ fn internal_random(input: &i64) -> u32 {
     }
 }
 
+fn internal_request(input: &str) -> String {
+    unsafe {
+        let result = request(string_to_ptr(input.to_string())) as *mut c_char;
+        let c_str = CStr::from_ptr(result);
+        c_str.to_str().unwrap().to_owned()
+    }
+}
 
 
 fn string_to_ptr(s: String) -> *mut c_char {
@@ -135,6 +143,19 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
                 Object::Int(o) => {
                     let n = internal_random(o) as i64;
                     Object::Int(n)
+                },
+                _ => Object::Null
+            }
+        }),
+    );
+
+    env.set(
+        String::from("寻找"),
+        &Object::Builtin(-1, |args| {
+            match &args[0] {
+                Object::String(o) => {
+                    let n = internal_request(&format!("{}", o));
+                    Object::String(n)
                 },
                 _ => Object::Null
             }
