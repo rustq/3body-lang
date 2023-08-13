@@ -65,7 +65,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ```rust
 给 宇宙 以 { "维度": 10 };
 
-宇宙["维度"] 降维 7
+宇宙.维度 降维 7
 
 // > 3
 ```
