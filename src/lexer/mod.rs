@@ -189,6 +189,7 @@ impl Lexer {
             ')' => Token::Rparen,
             '{' => Token::Lbrace,
             '}' => Token::Rbrace,
+            '.' => Token::Dot,
             '[' => Token::Lbracket,
             ']' => Token::Rbracket,
             ',' => Token::Comma,
@@ -344,6 +345,8 @@ if (5 < 10) {
 
 
 {"foo": "bar"};
+
+.
 "#;
 
         let tests = vec![
@@ -451,6 +454,8 @@ if (5 < 10) {
             Token::String(String::from("bar")),
             Token::Rbrace,
             Token::Semicolon,
+            Token::Blank,
+            Token::Dot,
             Token::Eof,
         ];
 

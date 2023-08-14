@@ -501,7 +501,7 @@ mod tests {
                 Some(Object::Int(4)),
             ),
             (
-                "给 宇宙 以 { \"维度\": 10 }; 宇宙[\"维度\"] 降维 7",
+                "给 宇宙 以 { \"维度\": 10 }; 宇宙.维度 降维 7",
                 Some(Object::Int(3)),
             ),
             (
@@ -556,7 +556,15 @@ mod tests {
                 Some(Object::Bool(true)),
             ),
             (
+                "let rand = import(\"./system/3body/rand\"); rand.default().getSuns() <= 3",
+                Some(Object::Bool(true)),
+            ),
+            (
                 "let rand = import(\"./system/3body/rand\"); rand[\"custom\"](1)[\"getSuns\"]()",
+                Some(Object::Int(1)),
+            ),
+            (
+                "let rand = import(\"./system/3body/rand\"); rand.custom(1).getSuns()",
                 Some(Object::Int(1)),
             ),
         ];

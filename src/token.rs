@@ -40,6 +40,7 @@ pub enum Token {
     Rparen,
     Lbrace,
     Rbrace,
+    Dot,
     Lbracket,
     Rbracket,
 

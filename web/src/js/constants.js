@@ -19,7 +19,7 @@ export const SNIPPETS = [
     label: 'Minus',
     value: `给 宇宙 以 { "维度": 10 };
 
-宇宙["维度"] 降维 7
+宇宙.维度 降维 7
 `,
   },
   {
