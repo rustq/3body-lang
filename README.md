@@ -94,7 +94,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 // thread 'main' panicked at '水 是 "剧毒的"!
 ```
 
-![carbon-const](https://user-images.githubusercontent.com/11075892/263507574-3b09ef6a-4147-49cd-a528-29f29e0cbeb7.png)
+![carbon-const](https://user-images.githubusercontent.com/11075892/263507710-d1c04562-ee87-4d19-9d76-a03dcc4dfa80.png)
 
 ### Function
 
