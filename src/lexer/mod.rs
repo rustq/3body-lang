@@ -240,6 +240,8 @@ impl Lexer {
         match literal.as_str() {
             "fn" => Token::Func,
             "let" => Token::Let,
+            "const" => Token::Const,
+            "思想钢印" => Token::Const,
             "给" => Token::Let,
             "以" => Token::Assign,
             "前进" => Token::Plus,

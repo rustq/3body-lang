@@ -4,9 +4,16 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 #[derive(PartialEq, Clone, Debug)]
+struct VariableStatus {
+    editable: bool,
+}
+
+
+#[derive(PartialEq, Clone, Debug)]
 pub struct Env {
     pub store: HashMap<String, Object>,
     outer: Option<Rc<RefCell<Env>>>,
+    variables_status: HashMap<String, VariableStatus>,
 }
 
 impl Env {
@@ -14,17 +21,19 @@ impl Env {
         Env {
             store: HashMap::new(),
             outer: None,
+            variables_status: HashMap::new(),
         }
     }
 
     pub fn from(store: HashMap<String, Object>) -> Self {
-        Env { store, outer: None }
+        Env { store, outer: None, variables_status: HashMap::new() }
     }
 
     pub fn new_with_outer(outer: Rc<RefCell<Env>>) -> Self {
         Env {
             store: HashMap::new(),
             outer: Some(outer),
+            variables_status: HashMap::new()
         }
     }
 
@@ -38,7 +47,17 @@ impl Env {
         }
     }
 
-    pub fn set(&mut self, name: String, value: &Object) {
+    pub fn set(&mut self, name: String, value: &Object, editable: bool) {
+        match self.variables_status.get(&name) {
+            Some(variable_status) => {
+                if !variable_status.editable {
+                    let value = self.get(name.clone()).unwrap();
+                    panic!("{} 是 {}!", &name, value);
+                }
+            },
+            _ => {}
+        }
+        self.variables_status.insert(name.clone(), VariableStatus { editable });
         self.store.insert(name, value.clone());
     }
 }
@@ -73,14 +92,14 @@ mod tests {
     #[test]
     fn test_env_get() {
         let mut env = Env::new();
-        env.set("key".to_string(), &Object::Int(1));
+        env.set("key".to_string(), &Object::Int(1), true);
         assert_eq!(env.get("key".to_string()), Some(Object::Int(1)));
     }
 
     #[test]
     fn test_env_set() {
         let mut env = Env::new();
-        env.set("key".to_string(), &Object::Int(1));
+        env.set("key".to_string(), &Object::Int(1), true);
         assert_eq!(env.store.get("key"), Some(&Object::Int(1)));
     }
 }

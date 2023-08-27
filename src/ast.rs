@@ -92,6 +92,8 @@ pub enum Stmt {
     Break,
     Continue,
     Let(Ident, Expr),
+    Const(Ident, Expr),
+    Assign(Ident, Expr),
     Return(Expr),
     Expr(Expr),
 }

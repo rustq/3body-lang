@@ -113,6 +113,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
             }
             Object::Null
         }),
+        false,
     );
 
     env.set(
@@ -126,6 +127,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
                 _ => Object::Null
             }
         }),
+        false,
     );
 
     env.set(
@@ -134,6 +136,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
             internal_clear();
             Object::Null
         }),
+        false,
     );
 
     env.set(
@@ -147,6 +150,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
                 _ => Object::Null
             }
         }),
+        false,
     );
 
     env.set(
@@ -160,6 +164,7 @@ pub fn eval(input_ptr: *mut c_char) -> *mut c_char {
                 _ => Object::Null
             }
         }),
+        false,
     );
 
     let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));

@@ -102,6 +102,8 @@ impl Formatter {
     fn format_stmt(&mut self, stmt: Stmt) -> String {
         match stmt {
             Stmt::Let(ident, expr) => self.format_let_stmt(ident, expr),
+            Stmt::Const(ident, expr) => self.format_const_stmt(ident, expr),
+            Stmt::Assign(ident, expr) => self.format_assign_stmt(ident, expr),
             Stmt::Return(expr) => self.format_return_stmt(expr),
             Stmt::Break => String::from("break;"),
             Stmt::Continue => String::from("continue;"),
@@ -119,6 +121,28 @@ impl Formatter {
     fn format_let_stmt(&mut self, ident: Ident, expr: Expr) -> String {
         let ident_str = self.format_ident_expr(ident);
         let result = format!("let {} = ", ident_str);
+
+        self.column += result.len();
+
+        let expr_str = self.format_expr(expr, Precedence::Lowest);
+
+        format!("{}{};", result, expr_str)
+    }
+
+    fn format_const_stmt(&mut self, ident: Ident, expr: Expr) -> String {
+        let ident_str = self.format_ident_expr(ident);
+        let result = format!("const {} = ", ident_str);
+
+        self.column += result.len();
+
+        let expr_str = self.format_expr(expr, Precedence::Lowest);
+
+        format!("{}{};", result, expr_str)
+    }
+
+    fn format_assign_stmt(&mut self, ident: Ident, expr: Expr) -> String {
+        let ident_str = self.format_ident_expr(ident);
+        let result = format!("{} = ", ident_str);
 
         self.column += result.len();
 
@@ -550,6 +574,29 @@ mod tests {
   "fooo": "abcdefg"
 };"#
             ),
+        ];
+
+        for (input, expect) in tests {
+            assert_eq!(String::from(expect), format(input));
+        }
+    }
+
+
+    #[test]
+    fn test_const_stmt() {
+        let tests = vec![
+            (" const foo=   1000", "const foo = 1000;"),
+        ];
+
+        for (input, expect) in tests {
+            assert_eq!(String::from(expect), format(input));
+        }
+    }
+
+    #[test]
+    fn test_assign_stmt() {
+        let tests = vec![
+            (" foo=   1000", "foo = 1000;"),
         ];
 
         for (input, expect) in tests {
