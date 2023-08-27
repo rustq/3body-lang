@@ -143,6 +143,11 @@ impl Parser {
     fn parse_stmt(&mut self) -> Option<Stmt> {
         match self.current_token {
             Token::Let => self.parse_let_stmt(),
+            Token::Const => self.parse_const_stmt(),
+            Token::Ident(_) => match self.next_token {
+                Token::Assign => self.parse_assign_stmt(),
+                _ => self.parse_expr_stmt()
+            },
             Token::Return => self.parse_return_stmt(),
             Token::Break => self.parse_break_stmt(),
             Token::Continue => self.parse_continue_stmt(),
@@ -178,6 +183,59 @@ impl Parser {
         }
 
         Some(Stmt::Let(name, expr))
+    }
+
+    fn parse_const_stmt(&mut self) -> Option<Stmt> {
+        match &self.next_token {
+            Token::Ident(_) => self.bump(),
+            _ => return None,
+        };
+
+        let name = match self.parse_ident() {
+            Some(name) => name,
+            None => return None,
+        };
+
+        if !self.expect_next_token(Token::Assign) {
+            return None;
+        }
+
+        self.bump();
+
+        let expr = match self.parse_expr(Precedence::Lowest) {
+            Some(expr) => expr,
+            None => return None,
+        };
+
+        if self.next_token_is(&Token::Semicolon) {
+            self.bump();
+        }
+
+        Some(Stmt::Const(name, expr))
+    }
+
+    fn parse_assign_stmt(&mut self) -> Option<Stmt> {
+        let name = match self.parse_ident() {
+            Some(name) => name,
+            None => return None,
+        };
+
+        if !self.expect_next_token(Token::Assign) {
+            return None;
+        }
+
+        self.bump();
+
+        let expr = match self.parse_expr(Precedence::Lowest) {
+            Some(expr) => expr,
+            None => return None,
+        };
+
+        if self.next_token_is(&Token::Semicolon) {
+            self.bump();
+        }
+
+        Some(Stmt::Assign(name, expr))
     }
 
     fn parse_break_stmt(&mut self) -> Option<Stmt> {
@@ -674,6 +732,56 @@ let foobar = 838383;
                 Stmt::Let(Ident(String::from("x")), Expr::Literal(Literal::Int(5))),
                 Stmt::Let(Ident(String::from("y")), Expr::Literal(Literal::Int(10))),
                 Stmt::Let(
+                    Ident(String::from("foobar")),
+                    Expr::Literal(Literal::Int(838383)),
+                ),
+            ],
+            program,
+        );
+    }
+
+    #[test]
+    fn test_const_stmt() {
+        let input = r#"
+const x = 5;
+const y = 10;
+const foobar = 838383;
+        "#;
+
+        let mut parser = Parser::new(Lexer::new(input));
+        let program = parser.parse();
+
+        check_parse_errors(&mut parser);
+        assert_eq!(
+            vec![
+                Stmt::Const(Ident(String::from("x")), Expr::Literal(Literal::Int(5))),
+                Stmt::Const(Ident(String::from("y")), Expr::Literal(Literal::Int(10))),
+                Stmt::Const(
+                    Ident(String::from("foobar")),
+                    Expr::Literal(Literal::Int(838383)),
+                ),
+            ],
+            program,
+        );
+    }
+
+    #[test]
+    fn test_asign_stmt() {
+        let input = r#"
+x = 5;
+y = 10;
+foobar = 838383;
+        "#;
+
+        let mut parser = Parser::new(Lexer::new(input));
+        let program = parser.parse();
+
+        check_parse_errors(&mut parser);
+        assert_eq!(
+            vec![
+                Stmt::Assign(Ident(String::from("x")), Expr::Literal(Literal::Int(5))),
+                Stmt::Assign(Ident(String::from("y")), Expr::Literal(Literal::Int(10))),
+                Stmt::Assign(
                     Ident(String::from("foobar")),
                     Expr::Literal(Literal::Int(838383)),
                 ),

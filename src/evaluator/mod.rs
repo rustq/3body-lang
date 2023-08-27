@@ -104,7 +104,20 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let Ident(name) = ident;
-                    self.env.borrow_mut().set(name.clone(), &value);
+                    self.env.borrow_mut().set(name.clone(), &value, true);
+                    None
+                }
+            },
+            Stmt::Const(ident, expr) => {
+                let value = match self.eval_expr(expr) {
+                    Some(value) => value,
+                    None => return None,
+                };
+                if Self::is_error(&value) {
+                    Some(value)
+                } else {
+                    let Ident(name) = ident;
+                    self.env.borrow_mut().set(name.clone(), &value, false);
                     None
                 }
             },
@@ -121,6 +134,28 @@ impl Evaluator {
                     Some(value)
                 } else {
                     Some(Object::ReturnValue(Box::new(value)))
+                }
+            }
+            Stmt::Assign(ident, expr) => {
+                let value = match self.eval_expr(expr) {
+                    Some(value) => value,
+                    None => return None,
+                };
+                if Self::is_error(&value) {
+                    Some(value)
+                } else {
+                    let Ident(name) = ident;
+                    let result = self.env.borrow_mut().set(name.clone(), &value, true);
+                    match result {
+                        Some(err) => {
+                            if Self::is_error(&err) {
+                                Some(err)
+                            } else {
+                                None
+                            }
+                        },
+                        None => return None,
+                    }
                 }
             }
             _ => None,
@@ -411,7 +446,7 @@ impl Evaluator {
         let list = params.iter().zip(args.iter());
         for (_, (ident, o)) in list.enumerate() {
             let Ident(name) = ident.clone();
-            scoped_env.set(name, o);
+            scoped_env.set(name, o, true);
         }
 
         self.env = Rc::new(RefCell::new(scoped_env));
@@ -751,6 +786,28 @@ if (10 > 1) {
                 "let a = 5; let b = a; let c = a + b + 5; c;",
                 Some(Object::Int(15)),
             ),
+        ];
+
+        for (input, expect) in tests {
+            assert_eq!(expect, eval(input));
+        }
+    }
+
+    #[test]
+    fn test_const_stmt() {
+        let tests = vec![
+            ("const a = 5; a = 3;", Some(Object::Error("a 是 5!".to_owned()))),
+        ];
+
+        for (input, expect) in tests {
+            assert_eq!(expect, eval(input));
+        }
+    }
+
+    #[test]
+    fn test_assign_stmt() {
+        let tests = vec![
+            ("let a = 5; a = 3; a", Some(Object::Int(3))),
         ];
 
         for (input, expect) in tests {

@@ -47,5 +47,6 @@ pub enum Token {
     // Reseved keywords
     Func,
     Let,
+    Const,
     Return,
 }

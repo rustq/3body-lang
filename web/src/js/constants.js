@@ -100,4 +100,11 @@ true
     value: `寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
 `,
   },
+  {
+    label: 'Const',
+    value: `思想钢印 水 = "剧毒的";
+
+水 = "能喝?";
+`,
+  },
 ];

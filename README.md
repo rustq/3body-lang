@@ -48,6 +48,27 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 给 时光 以 "生命";
 ```
 
+### Constant bindings
+
+##### Format
+
+```
+思想钢印 <identifier> = <expression>;
+```
+
+##### Example
+
+```rust
+思想钢印 水 = "剧毒的";
+
+水 = "能喝?";
+
+// Error(水 是 "剧毒的"!)
+```
+
+![carbon-const](https://user-images.githubusercontent.com/11075892/263533987-5feebc0a-3b34-4fbe-881e-c041a7f62df1.png)
+
+
 ### Operators
 
 ##### 前进(+)运算符
@@ -240,6 +261,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |request|寻找|"search"|
+|const|思想钢印|"thoughtcontrou"|
 
 
 ## System Libraries
