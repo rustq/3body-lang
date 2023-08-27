@@ -84,6 +84,18 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 // > false
 ```
 
+### Const
+
+```rust
+思想钢印 水 = "剧毒的";
+
+水 = "能喝？";
+
+// thread 'main' panicked at '水 是 "剧毒的"!
+```
+
+![carbon-const](https://user-images.githubusercontent.com/11075892/263507574-3b09ef6a-4147-49cd-a528-29f29e0cbeb7.png)
+
 ### Function
 
 ##### Format
@@ -240,6 +252,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |request|寻找|"search"|
+|const|思想钢印|"thoughtcontrou"|
 
 
 ## System Libraries
