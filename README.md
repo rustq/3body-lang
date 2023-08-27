@@ -50,6 +50,14 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 
 ### Constant bindings
 
+##### Format
+
+```
+思想钢印 <identifier> = <expression>;
+```
+
+##### Example
+
 ```rust
 思想钢印 水 = "剧毒的";
 
