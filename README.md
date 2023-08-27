@@ -89,9 +89,9 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ```rust
 思想钢印 水 = "剧毒的";
 
-水 = "能喝？";
+水 = "能喝?";
 
-// thread 'main' panicked at '水 是 "剧毒的"!
+// Error(水 是 "剧毒的"!)
 ```
 
 ![carbon-const](https://user-images.githubusercontent.com/11075892/263507710-d1c04562-ee87-4d19-9d76-a03dcc4dfa80.png)

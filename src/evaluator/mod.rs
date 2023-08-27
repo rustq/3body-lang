@@ -145,8 +145,17 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let Ident(name) = ident;
-                    self.env.borrow_mut().set(name.clone(), &value, true);
-                    None
+                    let result = self.env.borrow_mut().set(name.clone(), &value, true);
+                    match result {
+                        Some(err) => {
+                            if Self::is_error(&err) {
+                                Some(err)
+                            } else {
+                                None
+                            }
+                        },
+                        None => return None,
+                    }
                 }
             }
             _ => None,
@@ -787,7 +796,7 @@ if (10 > 1) {
     #[test]
     fn test_const_stmt() {
         let tests = vec![
-            ("const a = 5; a", Some(Object::Int(5))),
+            ("const a = 5; a = 3;", Some(Object::Error("a 是 5!".to_owned()))),
         ];
 
         for (input, expect) in tests {

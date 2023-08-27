@@ -8,6 +8,11 @@ struct VariableStatus {
     editable: bool,
 }
 
+macro_rules! IS {
+    () => (
+        '是'
+    )
+}
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct Env {
@@ -47,18 +52,19 @@ impl Env {
         }
     }
 
-    pub fn set(&mut self, name: String, value: &Object, editable: bool) {
+    pub fn set(&mut self, name: String, value: &Object, editable: bool) -> Option<Object> {
         match self.variables_status.get(&name) {
             Some(variable_status) => {
                 if !variable_status.editable {
                     let value = self.get(name.clone()).unwrap();
-                    panic!("{} 是 {}!", &name, value);
+                    return Some(Object::Error(format!("{} {} {}!", &name, IS!(), value)))
                 }
             },
             _ => {}
         }
         self.variables_status.insert(name.clone(), VariableStatus { editable });
         self.store.insert(name, value.clone());
+        None
     }
 }
 #[cfg(test)]
@@ -101,5 +107,12 @@ mod tests {
         let mut env = Env::new();
         env.set("key".to_string(), &Object::Int(1), true);
         assert_eq!(env.store.get("key"), Some(&Object::Int(1)));
+    }
+
+    #[test]
+    fn test_editable_false() {
+        let mut env = Env::new();
+        assert_eq!(env.set("key".to_string(), &Object::Int(1), false), None);
+        assert_eq!(env.set("key".to_string(), &Object::Int(1), false), Some(Object::Error("key 是 1!".to_owned())));
     }
 }
