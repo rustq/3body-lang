@@ -63,10 +63,6 @@ $ 3body
 
 ```rust
 思想钢印 水 = "剧毒的";
-
-水 = "无毒？";
-
-// > Error(Can not assign to constant variable 水!)
 ```
 
 ### Operators
