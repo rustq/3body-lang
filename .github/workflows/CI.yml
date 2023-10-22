@@ -25,6 +25,10 @@ jobs:
       run: |
         make repl
 
+    - name: Repl of Origin
+      run: |
+        make repl_origin
+
     - name: Test
       run: make test
 
