@@ -25,9 +25,13 @@ web_deploy:
 	make build_wasm
 	(cd web && yarn --pure-lockfile && yarn deploy)
 
+.PHONY: repl_origin
+repl_origin:
+	cargo run --bin runtime --features="binaries"
+
 .PHONY: repl
 repl:
-	cargo run --bin runtime --features="binaries"
+	(cd three_body_e2021 && cargo run --features="repl")
 
 .PHONY: example
 example:
