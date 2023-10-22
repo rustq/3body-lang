@@ -9,14 +9,20 @@
 
 ![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
 
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
+目前三体编程语言已经实现了如 "面壁"、"破壁"、"思想钢印"、"冬眠" 等语法，不过目前仍然是一个概念级的编程语言。
 
-Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [Monkey rs](https://github.com/wadackel/rs-monkey-lang) and [Monkey Rust 2021 Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
+解释器的设计均来自于作者 Thorsten Ball 的原书，同时很感谢多个优秀开源仓库为本项目带来的灵感启发。
+
+All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
+
+Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [meloalright/Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
 
 ## Installation
 
-Install 3body in MacOS using [rust toolchain](https://www.rust-lang.org/tools/install)
+目前可以通过 `HomeBrew` 进行快速安装，不过目前仍然需要在设备上提前安装 `Rust` 工具链。
+
+Installation using [HomeBrew](https://brew.sh/) and [Rust toolchain](https://www.rust-lang.org/tools/install)
 
 ```shell
 $ brew tap rustq/3body-lang
@@ -258,6 +264,8 @@ $ make test
 有更多建议和想法 💡
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
+
+Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## License
 
