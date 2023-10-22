@@ -7,9 +7,12 @@
 
 三体编程语言 Three Body Language written in Rust
 
+![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
+
 Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [Monkey rs](https://github.com/wadackel/rs-monkey-lang) and [Monkey Rust 2021 Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
+
 
 ## Syntax overview
 
@@ -28,8 +31,6 @@ Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [Monkey
 
 给 时光 以 "生命";
 ```
-
-![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
 
 ### Constant bindings
 
