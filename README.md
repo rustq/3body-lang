@@ -9,26 +9,7 @@
 
 Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
-Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
-
-## Try 3body-lang
-
-### With REPL
-
-![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
-
-### With Runtime
-
-![carbon-2](https://user-images.githubusercontent.com/11075892/225037791-1175a8df-d306-4de0-9d62-27f9591a9d99.png)
-
-
-### With Online Playground
-
-![playground](https://user-images.githubusercontent.com/11075892/218256821-376b9f89-46f7-40b2-9dcd-00baafa31891.png)
-
-Working with Wasm!! 主很在乎 👏🏻
-
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
+Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [Monkey rs](https://github.com/wadackel/rs-monkey-lang) and [Monkey Rust 2021 Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
 ## Syntax overview
 
@@ -48,6 +29,8 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 给 时光 以 "生命";
 ```
 
+![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
+
 ### Constant bindings
 
 ##### Format
@@ -61,13 +44,10 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ```rust
 思想钢印 水 = "剧毒的";
 
-水 = "能喝?";
+水 = "无毒？";
 
-// Error(水 是 "剧毒的"!)
+// > Error(Can not assign to constant variable 水!)
 ```
-
-![carbon-const](https://user-images.githubusercontent.com/11075892/263533987-5feebc0a-3b34-4fbe-881e-c041a7f62df1.png)
-
 
 ### Operators
 
@@ -137,34 +117,56 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ```rust
 给 面壁计划 以 法则() {
     给 危机纪元 以 3;
-    给 人数 以 4;
+    给 面壁者 以 ["泰勒", "雷迪亚兹", "希恩斯", "罗辑"];
     面壁 (危机纪元 < 400) {
 
-        给 危机纪元 以 危机纪元 + 1;
+        危机纪元 = 危机纪元 + 1;
 
         if (危机纪元 == 8) {
-            给 人数 以 人数 - 1;
+            面壁者 = rest(面壁者);
             延续;
         }
         if (危机纪元 == 23) {
-            给 人数 以 人数 - 1;
+            面壁者 = rest(面壁者);
             延续;
         }
         if (危机纪元 == 205) {
-            给 人数 以 人数 - 1;
+            面壁者 = rest(面壁者);
         }
-
-        广播([危机纪元, 人数]);
 
         if (危机纪元 == 205) {
             破壁;
         }
     }
+    面壁者
 }
 
 面壁计划()
 ```
 
+### Closure
+
+##### Example
+
+```rust
+给 末日战役 以 法则() {
+    给 响 以 0;
+    return 法则(x) {
+        if (响 + x >= 2000) {
+            响 = 2000;
+            return 响;
+        }
+        响 = 响 + x;
+        响
+    }
+}
+
+给 水滴两千响 以 末日战役();
+
+水滴两千响(1);
+水滴两千响(1);
+水滴两千响(1);
+```
 
 ## Built-in Functions
 
@@ -228,23 +230,9 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 毁灭();
 ```
 
-### Request
-
-##### Format
-
-```
-寻找(<arg1>): void
-```
-
-##### Example
-
-```rust
-寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
-```
-
 ## Summary
 
-|Monkey|3body-lang|Explanation|
+|Token|3body-lang|Explanation|
 |---|---|---|
 |let|给|"give"|
 |=|以|"as"|
@@ -260,13 +248,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
-|request|寻找|"search"|
 |const|思想钢印|"thoughtcontrou"|
-
-
-## System Libraries
-
-[rand](system/3body/README.md#rand)
 
 
 ## Development
@@ -277,14 +259,6 @@ $ git clone https://github.com/rustq/3body-lang.git
 $ cd 3body-lang
 
 $ make repl
-```
-
-```
-$ ./target/debug/runtime ./example/地球.3body
-```
-
-```
-$ make build_wasm
 ```
 
 ```
