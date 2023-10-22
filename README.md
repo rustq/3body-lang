@@ -158,30 +158,6 @@ $ 3body
 面壁计划()
 ```
 
-### Closure
-
-##### Example
-
-```rust
-给 末日战役 以 法则() {
-    给 响 以 0;
-    return 法则(x) {
-        if (响 + x >= 2000) {
-            响 = 2000;
-            return 响;
-        }
-        响 = 响 + x;
-        响
-    }
-}
-
-给 水滴两千响 以 末日战役();
-
-水滴两千响(1);
-水滴两千响(1);
-水滴两千响(1);
-```
-
 ## Built-in Functions
 
 ### Print
@@ -250,6 +226,7 @@ $ 3body
 |---|---|---|
 |let|给|"give"|
 |=|以|"as"|
+|const|思想钢印|"thoughtcontrou"|
 |+|前进|"go forward"|
 |-|降维|"dimension reduction"|
 |true|这是计划的一部分|"It's part of the plan."|
@@ -262,7 +239,6 @@ $ 3body
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
-|const|思想钢印|"thoughtcontrou"|
 
 
 ## Development
