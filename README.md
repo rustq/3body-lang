@@ -15,7 +15,7 @@
 
 All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
 
-Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [meloalright/Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
+Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
 
 ## Installation
