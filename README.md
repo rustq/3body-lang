@@ -14,6 +14,18 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [Monkey rs](https://github.com/wadackel/rs-monkey-lang) and [Monkey Rust 2021 Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
 
+## Installation in Rust toolchain
+
+`MacOS`
+
+```shell
+$ brew tap rustq/3body-lang && brew install rustq/tap/three_body
+```
+
+```shell
+$ 3body
+```
+
 ## Syntax overview
 
 ### Variable bindings
