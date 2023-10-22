@@ -1,0 +1,35 @@
+name: Tag
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Compress Source Code"
+        if: true
+        uses: master-atul/tar-action@v1.0.2
+        with:
+          command: c
+          cwd: "./"
+          files: "three_body_e2021"
+          outPath: "${{ runner.temp }}/3body-lang.tar.gz"
+
+      - name: "Release Source Code"
+        uses: pragmatrix/release-action@exp
+        with:
+          owner: rustq
+          repo: 3body-lang
+          tag: ${{ env.RELEASE_VERSION }}
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: "${{ runner.temp }}/3body-lang.tar.gz"
+          artifactErrorsFailBuild: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true

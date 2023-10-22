@@ -14,10 +14,11 @@ rand = { version = "0.7.3" }
 reqwest = { version = "0.11", features = ["blocking"] }
 
 [[bin]]
-name = "repl"
+name = "3body"
 path = "src/bin/main.rs"
 required-features = ["repl"]
 
 [features]
+default = ["repl"]
 repl = ["rustyline"]
 wasm = []
