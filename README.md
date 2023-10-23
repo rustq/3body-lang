@@ -26,7 +26,7 @@ Installation using [HomeBrew](https://brew.sh/) and [Rust toolchain](https://www
 
 ```shell
 $ brew tap rustq/3body-lang
-$ brew install rustq/tap/three_body
+$ brew install rustq/tap/three-body
 ```
 
 ```shell
