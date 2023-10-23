@@ -7,28 +7,31 @@
 
 三体编程语言 Three Body Language written in Rust
 
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
-
-Base on [Writing An Interpreter In Go](https://interpreterbook.com/) and [monkey-lang](https://github.com/wadackel/rs-monkey-lang)
-
-## Try 3body-lang
-
-### With REPL
-
 ![carbon](https://user-images.githubusercontent.com/11075892/218237230-18000cfe-8db1-4bf7-979d-a11695039f35.png)
 
-### With Runtime
+目前三体编程语言已经实现了如 "面壁"、"破壁"、"思想钢印"、"冬眠" 等语法，不过仍然是一个概念级的编程语言。
 
-![carbon-2](https://user-images.githubusercontent.com/11075892/225037791-1175a8df-d306-4de0-9d62-27f9591a9d99.png)
+解释器的设计均来自于作者 Thorsten Ball 的原书，同时很感谢多个优秀开源仓库为本项目带来的灵感启发。
 
+All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
 
-### With Online Playground
+Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
-![playground](https://user-images.githubusercontent.com/11075892/218256821-376b9f89-46f7-40b2-9dcd-00baafa31891.png)
+<!-- 
+## Installation
 
-Working with Wasm!! 主很在乎 👏🏻
+目前可以通过 `HomeBrew` 进行快速安装，不过需要在设备上提前安装 `Rust` 工具链。
 
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
+Installation using [HomeBrew](https://brew.sh/) and [Rust toolchain](https://www.rust-lang.org/tools/install)
+
+```shell
+$ brew tap rustq/3body-lang
+$ brew install rustq/tap/three-body
+```
+
+```shell
+$ 3body
+``` -->
 
 ## Syntax overview
 
@@ -60,14 +63,7 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 
 ```rust
 思想钢印 水 = "剧毒的";
-
-水 = "能喝?";
-
-// Error(水 是 "剧毒的"!)
 ```
-
-![carbon-const](https://user-images.githubusercontent.com/11075892/263533987-5feebc0a-3b34-4fbe-881e-c041a7f62df1.png)
-
 
 ### Operators
 
@@ -135,36 +131,32 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 ##### Example
 
 ```rust
-给 面壁计划 以 法则() {
-    给 危机纪元 以 3;
-    给 人数 以 4;
-    面壁 (危机纪元 < 400) {
+给 危机纪年 以 3;
+给 面壁者 以 ["泰勒", "雷迪亚兹", "希恩斯", "罗辑"];
 
-        给 危机纪元 以 危机纪元 + 1;
+面壁 (危机纪年 < 400) {
 
-        if (危机纪元 == 8) {
-            给 人数 以 人数 - 1;
-            延续;
-        }
-        if (危机纪元 == 23) {
-            给 人数 以 人数 - 1;
-            延续;
-        }
-        if (危机纪元 == 205) {
-            给 人数 以 人数 - 1;
-        }
+    危机纪年 = 危机纪年 + 1;
 
-        广播([危机纪元, 人数]);
+    if (危机纪年 == 8) {
+        面壁者 = rest(面壁者);
+        延绪;
+    }
+    if (危机纪年 == 23) {
+        面壁者 = rest(面壁者);
+        延绪;
+    }
+    if (危机纪年 == 205) {
+        面壁者 = rest(面壁者);
+    }
 
-        if (危机纪元 == 205) {
-            破壁;
-        }
+    if (危机纪年 == 205) {
+        破壁;
     }
 }
 
-面壁计划()
+面壁者
 ```
-
 
 ## Built-in Functions
 
@@ -228,26 +220,13 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 毁灭();
 ```
 
-### Request
-
-##### Format
-
-```
-寻找(<arg1>): void
-```
-
-##### Example
-
-```rust
-寻找("https://raw.githubusercontent.com/rustq/3body-lang/main/example/外星文明")
-```
-
 ## Summary
 
-|Monkey|3body-lang|Explanation|
+|Token|3body-lang|Explanation|
 |---|---|---|
 |let|给|"give"|
 |=|以|"as"|
+|const|思想钢印|"thoughtcontrou"|
 |+|前进|"go forward"|
 |-|降维|"dimension reduction"|
 |true|这是计划的一部分|"It's part of the plan."|
@@ -255,18 +234,11 @@ Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-
 |fn|法则|"rule"|
 |while|面壁|"face the wall"|
 |break|破壁|"break the wall"|
-|continue|延续、延绪|"continue"|
+|continue|延绪|"continue"|
 |print|广播|"broadcast"|
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
-|request|寻找|"search"|
-|const|思想钢印|"thoughtcontrou"|
-
-
-## System Libraries
-
-[rand](system/3body/README.md#rand)
 
 
 ## Development
@@ -280,20 +252,14 @@ $ make repl
 ```
 
 ```
-$ ./target/debug/runtime ./example/地球.3body
-```
-
-```
-$ make build_wasm
-```
-
-```
 $ make test
 ```
 
 有更多建议和想法 💡
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
+
+Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## License
 
