@@ -17,6 +17,15 @@ fn main() {
         env: Rc::new(RefCell::new(env::Env::from(new_builtins()))),
     };
 
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() > 1 {
+        if (args[1] == "-v") {
+            println!("0.3.0");
+        }
+        return;
+    }
+
     loop {
         match rl.readline(">> ") {
             Ok(line) => {
