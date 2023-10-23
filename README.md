@@ -140,11 +140,11 @@ $ 3body
 
     if (危机纪年 == 8) {
         面壁者 = rest(面壁者);
-        延续;
+        延绪;
     }
     if (危机纪年 == 23) {
         面壁者 = rest(面壁者);
-        延续;
+        延绪;
     }
     if (危机纪年 == 205) {
         面壁者 = rest(面壁者);
@@ -234,7 +234,7 @@ $ 3body
 |fn|法则|"rule"|
 |while|面壁|"face the wall"|
 |break|破壁|"break the wall"|
-|continue|延续、延绪|"continue"|
+|continue|延绪|"continue"|
 |print|广播|"broadcast"|
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
