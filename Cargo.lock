@@ -1087,7 +1087,6 @@ name = "three_body_e2021"
 version = "0.1.0"
 dependencies = [
  "rand",
- "reqwest",
  "rustyline 12.0.0",
  "unicode-xid",
 ]

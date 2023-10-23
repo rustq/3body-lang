@@ -6,7 +6,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 extern crate rand;
-extern crate reqwest;
+// extern crate reqwest;
 
 use crate::evaluator::object::Object;
 use crate::evaluator::Evaluator;
@@ -32,7 +32,7 @@ pub fn new_builtins() -> HashMap<String, Object> {
     );
     builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
-    builtins.insert(String::from("request"), Object::Builtin(1, three_body_request));
+    // builtins.insert(String::from("request"), Object::Builtin(1, three_body_request));
     builtins.insert(
         String::from("import"),
         Object::Builtin(1, three_body_import),
@@ -134,22 +134,22 @@ fn three_body_sleep(args: Vec<Object>) -> Object {
     }
 }
 
-fn three_body_request(args: Vec<Object>) -> Object {
-    match &args[0] {
-        Object::String(o) => {
-            let resp = reqwest::blocking::get(o);
-            match resp {
-                Ok(res) => {
-                    Object::String(res.text().expect("should be text"))
-                },
-                Err(error) => {
-                    Object::Error(format!("request got {}", error))
-                }
-            }
-        }
-        _ => Object::Null,
-    }
-}
+// fn three_body_request(args: Vec<Object>) -> Object {
+//     match &args[0] {
+//         Object::String(o) => {
+//             let resp = reqwest::blocking::get(o);
+//             match resp {
+//                 Ok(res) => {
+//                     Object::String(res.text().expect("should be text"))
+//                 },
+//                 Err(error) => {
+//                     Object::Error(format!("request got {}", error))
+//                 }
+//             }
+//         }
+//         _ => Object::Null,
+//     }
+// }
 
 fn three_body_import(args: Vec<Object>) -> Object {
     match &args[0] {
