@@ -1084,7 +1084,7 @@ dependencies = [
 
 [[package]]
 name = "three_body_e2021"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "rand",
  "rustyline 12.0.0",
