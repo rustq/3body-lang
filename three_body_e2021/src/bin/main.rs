@@ -20,8 +20,32 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     if args.len() > 1 {
-        if (args[1] == "-v") {
-            println!("0.3.0");
+        match args[1].as_str() {
+            "-v" => {
+                println!(env!("CARGO_PKG_VERSION"));
+            }
+            "-e" => {
+                let input = args[2].to_owned();
+                let mut lexer = Lexer::new(&input);
+                let mut parser = Parser::new(lexer);
+                let program = parser.parse();
+                let errors = parser.get_errors();
+
+                if errors.len() > 0 {
+                    for err in errors {
+                        println!("{:?}", err);
+                    }
+                    return;
+                }
+
+                if let Some(evaluated) = evaluator.eval(&program) {
+                    match evaluated {
+                        object::Object::Null => {},
+                        _ => println!("{}\n", evaluated),
+                    }
+                }
+            }
+            _ => {}
         }
         return;
     }
