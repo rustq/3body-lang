@@ -17,21 +17,15 @@ All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
 
 Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
-<!-- 
 ## Installation
 
-目前可以通过 `HomeBrew` 进行快速安装，不过需要在设备上提前安装 `Rust` 工具链。
-
-Installation using [HomeBrew](https://brew.sh/) and [Rust toolchain](https://www.rust-lang.org/tools/install)
-
 ```shell
-$ brew tap rustq/3body-lang
-$ brew install rustq/tap/three-body
+$ brew install three-body
 ```
 
 ```shell
-$ 3body
-``` -->
+$ 3body -V
+```
 
 ## Syntax overview
 
