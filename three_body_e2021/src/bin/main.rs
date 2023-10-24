@@ -21,10 +21,10 @@ fn main() {
 
     if args.len() > 1 {
         match args[1].as_str() {
-            "-v" => {
+            "-V" => {
                 println!(env!("CARGO_PKG_VERSION"));
             }
-            "-e" => {
+            "-c" => {
                 let input = args[2].to_owned();
                 let mut lexer = Lexer::new(&input);
                 let mut parser = Parser::new(lexer);
@@ -45,7 +45,17 @@ fn main() {
                     }
                 }
             }
-            _ => {}
+            _ => {
+                println!("usage: 3body [option] ... [arg] ...
+
+Options and arguments:
+
+-V     : print the 3body-lang version number and exit 
+-h     : print this help message and exit 
+-c cmd : program passed in as string (terminates option list)
+-      : program in repl (default)
+")
+            }
         }
         return;
     }
