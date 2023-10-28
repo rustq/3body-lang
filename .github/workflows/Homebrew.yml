@@ -23,7 +23,7 @@ jobs:
                     formula-path: Formula/t/three-body.rb
                     homebrew-tap: Homebrew/homebrew-core
                     base-branch: master
-                    download-url: https://github.com/rustq/3body-lang/releases/download/${{ steps.extract-version.outputs.tag-name }}/3body-lang.tar.gz
+                    download-url: https://github.com/rustq/3body-lang/archive/refs/tags/${{ steps.extract-version.outputs.tag-name }}.tar.gz
                     commit-message: |
                         {{formulaName}} {{version}}
 

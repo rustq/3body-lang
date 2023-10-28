@@ -3,8 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - '0\.*\.*'
+      - '*'
   pull_request:
     branches:
       - main
@@ -23,15 +22,8 @@ jobs:
 
     - name: Repl
       run: |
-        make repl
-
-    - name: Repl of Origin
-      run: |
-        make repl_origin
+        cargo build --features="repl"
 
     - name: Test
-      run: make test
-
-    - name: Example
       run: |
-        make example
+        cd interpreter && cargo test

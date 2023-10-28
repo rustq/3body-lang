@@ -61,7 +61,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: cd three_body_e2021; cargo build --target ${{ matrix.target }} --release --locked
+        run: cargo build --target ${{ matrix.target }} --release --locked
 
       - name: Strip binary
         if: matrix.strip

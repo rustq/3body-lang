@@ -33,10 +33,10 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
     // builtins.insert(String::from("request"), Object::Builtin(1, three_body_request));
-    builtins.insert(
-        String::from("import"),
-        Object::Builtin(1, three_body_import),
-    );
+    // builtins.insert(
+    //     String::from("import"),
+    //     Object::Builtin(1, three_body_import),
+    // );
     builtins.insert(
         String::from("random"),
         Object::Builtin(1, three_body_random),
@@ -151,31 +151,31 @@ fn three_body_sleep(args: Vec<Object>) -> Object {
 //     }
 // }
 
-fn three_body_import(args: Vec<Object>) -> Object {
-    match &args[0] {
-        Object::String(o) => {
-            let mut file = File::open(format!("{o}.3body")).expect("Unable to open the file");
-            let mut contents = String::new();
+// fn three_body_import(args: Vec<Object>) -> Object {
+//     match &args[0] {
+//         Object::String(o) => {
+//             let mut file = File::open(format!("{o}.3body")).expect("Unable to open the file");
+//             let mut contents = String::new();
 
-            file.read_to_string(&mut contents)
-                .expect("Unable to read the file");
+//             file.read_to_string(&mut contents)
+//                 .expect("Unable to read the file");
 
-            let mut parser = Parser::new(Lexer::new(&contents));
-            let program = parser.parse();
+//             let mut parser = Parser::new(Lexer::new(&contents));
+//             let program = parser.parse();
 
-            let env = Env::from(new_builtins());
-            let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
+//             let env = Env::from(new_builtins());
+//             let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
 
-            let result = evaluator.eval(&program);
+//             let result = evaluator.eval(&program);
 
-            match result {
-                Some(obj) => return obj,
-                _ => return Object::Null,
-            };
-        }
-        _ => Object::Null,
-    }
-}
+//             match result {
+//                 Some(obj) => return obj,
+//                 _ => return Object::Null,
+//             };
+//         }
+//         _ => Object::Null,
+//     }
+// }
 
 #[cfg(not(target_arch = "wasm32"))]
 fn three_body_random(args: Vec<Object>) -> Object {
