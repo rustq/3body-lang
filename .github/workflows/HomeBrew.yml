@@ -28,4 +28,4 @@ jobs:
                         {{formulaName}} {{version}}
               env:
                 COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
-                # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
