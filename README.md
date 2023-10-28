@@ -242,7 +242,7 @@ $ git clone https://github.com/rustq/3body-lang.git
 
 $ cd 3body-lang
 
-$ make repl
+$ cargo run --features="repl"
 ```
 
 ```
@@ -252,8 +252,6 @@ $ make test
 有更多建议和想法 💡
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
-
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## License
 
