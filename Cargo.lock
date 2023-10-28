@@ -1088,6 +1088,7 @@ version = "0.3.0"
 dependencies = [
  "rand",
  "rustyline 12.0.0",
+ "rustyline-derive",
  "unicode-xid",
 ]
 

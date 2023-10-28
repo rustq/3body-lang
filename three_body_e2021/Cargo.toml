@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 rustyline = { version = "12.0.0", optional = true }
+rustyline-derive = { version = "0.4.0", optional = true }
 unicode-xid = { version = "0.2.1" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -14,10 +15,10 @@ rand = { version = "0.7.3" }
 
 [[bin]]
 name = "3body"
-path = "src/bin/main.rs"
+path = "src/bin/repl/mod.rs"
 required-features = ["repl"]
 
 [features]
 default = ["repl"]
-repl = ["rustyline"]
+repl = ["rustyline", "rustyline-derive"]
 wasm = []
