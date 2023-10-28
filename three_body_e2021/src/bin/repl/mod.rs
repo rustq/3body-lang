@@ -1,6 +1,8 @@
 #[cfg(feature = "repl")]
 extern crate rustyline;
 
+pub mod helper;
+
 use three_body_e2021::evaluator::builtins::new_builtins;
 use three_body_e2021::evaluator::env;
 use three_body_e2021::evaluator::Evaluator;
@@ -10,8 +12,11 @@ use three_body_e2021::parser::Parser;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+
 fn main() {
-    let mut rl = rustyline::DefaultEditor::new().expect("should exist");
+    let mut rl = rustyline::Editor::new().expect("should exist");
+
+    rl.set_helper(Some(helper::Helper::new()));
 
     let mut evaluator = Evaluator {
         env: Rc::new(RefCell::new(env::Env::from(new_builtins()))),

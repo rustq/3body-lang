@@ -1,0 +1,33 @@
+name: Homebrew
+
+on:
+    release:
+      types: [ released ]
+
+jobs:
+    homebrew:
+        name: Bump Homebrew formula
+        if: ${{ github.event_name != 'push' || !contains(github.ref, '-') }}
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Extract version
+              id: extract-version
+              run: |
+                echo "tag-name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+            - uses: mislav/bump-homebrew-formula-action@v3
+              with:
+                    formula-name: three-body
+                    formula-path: Formula/t/three-body.rb
+                    homebrew-tap: Homebrew/homebrew-core
+                    base-branch: main
+                    download-url: https://github.com/rustq/3body-lang/releases/download/${{ steps.extract-version.outputs.tag-name }}/3body-lang.tar.gz
+                    commit-message: |
+                        {{formulaName}} {{version}}
+
+                        Created by https://github.com/mislav/bump-homebrew-formula-action
+              env:
+                COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
