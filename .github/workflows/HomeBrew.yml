@@ -1,3 +1,5 @@
+name: HomeBrew
+
 on:
     release:
       types: [ released ]
