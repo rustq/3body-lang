@@ -26,6 +26,8 @@ jobs:
                     download-url: https://github.com/rustq/3body-lang/releases/download/${{ steps.extract-version.outputs.tag-name }}/3body-lang.tar.gz
                     commit-message: |
                         {{formulaName}} {{version}}
+
+                        Created by https://github.com/mislav/bump-homebrew-formula-action
               env:
                 COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
