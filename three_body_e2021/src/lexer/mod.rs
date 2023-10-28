@@ -107,6 +107,9 @@ impl Lexer {
             '"' => {
                 return self.consume_string();
             },
+            '\'' => {
+                return self.consume_single_quotation_marks_string();
+            },
             '[' => Token::LBracket,
             ']' => Token::RBracket,
             '.' => Token::Dot,
@@ -256,8 +259,24 @@ impl Lexer {
                 self.walk_char();
             }
         }
+        // infinity loop bug when let a = "3
     }
 
+    fn consume_single_quotation_marks_string(&mut self) -> Token {
+        self.walk_char();
+        let start_pos = self.pos;
+
+        loop {
+            if self.ch == '\'' {
+                let end_pos = self.pos;
+                let literal = self.input[start_pos..end_pos].iter().collect::<String>();
+                self.walk_char();
+                return Token::String(literal);
+            } else {
+                self.walk_char();
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -311,6 +330,7 @@ if (5 < 10) {
 10 > 10;
 "foobar";
 "foo bar";
+'foo bar';
 
 [1, 2];
 
@@ -408,6 +428,8 @@ if (5 < 10) {
             Token::Int(10),
             Token::Semicolon,
             Token::String(String::from("foobar")),
+            Token::Semicolon,
+            Token::String(String::from("foo bar")),
             Token::Semicolon,
             Token::String(String::from("foo bar")),
             Token::Semicolon,
