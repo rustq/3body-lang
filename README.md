@@ -150,7 +150,7 @@ $ 3body
 
 ## Built-in Functions
 
-##### Print 广播
+##### Print
 
 ```shell
 广播(<arg1>, <arg2>, ...): void
@@ -166,7 +166,7 @@ $ 3body
 // > "半人马星系"
 ```
 
-##### Sleep 冬眠
+##### Sleep
 
 ```shell
 冬眠(<arg1>): void
@@ -178,19 +178,7 @@ $ 3body
 冬眠(1000);
 ```
 
-##### Clear 二向箔清理
-
-```rust
-二向箔清理();
-```
-
-##### Exit 毁灭
-
-```rust
-毁灭();
-```
-
-##### Deep-Equal 没关系的都一样
+##### Deep-Equal
 
 ```shell
 没关系的都一样(<arg1>, <arg2>): bool
