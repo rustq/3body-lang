@@ -162,15 +162,7 @@ $ 3body -h
 
 ## Built-in Functions
 
-### Print
-
-##### Format
-
-```
-广播(<arg1>, <arg2>, ...): void
-```
-
-##### Example
+##### Print 广播
 
 ```rust
 给 三体世界坐标 以 "半人马星系";
@@ -180,60 +172,30 @@ $ 3body -h
 // > "半人马星系"
 ```
 
-### Sleep
-
-##### Format
-
-```
-冬眠(<arg1>): void
-```
-
-##### Example
+##### Sleep 冬眠
 
 ```rust
 冬眠(1000);
 ```
 
-### Clear
-
-##### Format
-
-```
-二向箔清理(): void
-```
-
-##### Example
+##### Clear 二向箔清理
 
 ```rust
 二向箔清理();
 ```
 
-### Exit
-
-##### Format
-
-```
-毁灭(): void
-```
-
-##### Example
+##### Exit 毁灭
 
 ```rust
 毁灭();
 ```
 
-### Deep Equal
-
-##### Format
-
-```
-没关系的都一样(<arg1>, <arg2>): void
-```
-
-##### Example
+##### Deep Equal 没关系的都一样
 
 ```rust
 没关系的都一样([1, [2, 3], { "4": 5 }], [1, [2, 3], { "4": 5 }]);
+
+// > true
 ```
 
 ## Summary
@@ -256,43 +218,6 @@ $ 3body -h
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |deep-equal|没关系的都一样|"It's okay. It's all the same."|
-
-
-## Advanced
-
-
-### Recursion
-
-`递归`
-
-```rust
-给 镜子 以 法则() {
-	广播("白冰移动滑块");
-	镜子()
-}
-
-镜子()
-```
-
-### Closure
-
-`闭包`
-
-```rust
-给 水滴 以 法则() {
-    给 响 = 0;
-    法则() {
-        响 = 响 + 1; 响
-    }
-};
-
-给 撞 = 水滴();
-
-撞();
-撞();
-撞()
-```
-
 
 ## Development
 
