@@ -17,27 +17,31 @@ All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
 
 Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
-## Installation
+## ⚡️ Installation
 
 ```shell
 $ brew install three-body
 ```
 
+## ⚡️ Quick Start
+
 ```shell
-$ 3body -V
+$ 3body -h
 ```
 
-## Syntax overview
-
-### Variable bindings
-
-##### Format
-
+```shell
+$ 3body
 ```
+
+## Syntax Overview
+
+##### Variable bindings 变量绑定
+
+```shell
 给 <identifier> 以 <expression>;
 ```
 
-##### Example
+`example:`
 
 ```rust
 给 岁月 以 "文明";
@@ -45,23 +49,19 @@ $ 3body -V
 给 时光 以 "生命";
 ```
 
-### Constant bindings
+##### Constant bindings 常量绑定
 
-##### Format
-
-```
+```shell
 思想钢印 <identifier> = <expression>;
 ```
 
-##### Example
+`example:`
 
 ```rust
 思想钢印 水 = "剧毒的";
 ```
 
-### Operators
-
-##### 前进(+)运算符
+##### 前进(+) 运算符
 
 ```rust
 给 自然选择 以 0;
@@ -71,7 +71,7 @@ $ 3body -V
 // > 4
 ```
 
-##### 降维(-)运算符
+##### 降维(-) 运算符
 
 ```rust
 给 宇宙 以 { "维度": 10 };
@@ -81,7 +81,7 @@ $ 3body -V
 // > 3
 ```
 
-### Boolean
+##### Boolean 布尔值
 
 ```rust
 这是计划的一部分
@@ -95,15 +95,13 @@ $ 3body -V
 // > false
 ```
 
-### Function
+##### Function 函数定义
 
-##### Format
-
-```
+```shell
 法则 (<parameter one>, <parameter two>, ...) { <block statement> };
 ```
 
-##### Example
+`example:`
 
 ```rust
 给 黑暗森林 以 法则() {
@@ -114,15 +112,13 @@ $ 3body -V
 黑暗森林()
 ```
 
-### Loop
+##### Loop 循环语法
 
-##### Format
-
-```
+```shell
 面壁 (<expression>) { <block statement> };
 ```
 
-##### Example
+`example:`
 
 ```rust
 给 危机纪年 以 3;
@@ -154,15 +150,13 @@ $ 3body -V
 
 ## Built-in Functions
 
-### Print
+##### Print
 
-##### Format
-
-```
+```shell
 广播(<arg1>, <arg2>, ...): void
 ```
 
-##### Example
+`example:`
 
 ```rust
 给 三体世界坐标 以 "半人马星系";
@@ -172,46 +166,30 @@ $ 3body -V
 // > "半人马星系"
 ```
 
-### Sleep
+##### Sleep
 
-##### Format
-
-```
+```shell
 冬眠(<arg1>): void
 ```
 
-##### Example
+`example:`
 
 ```rust
 冬眠(1000);
 ```
 
-### Clear
+##### Deep-Equal
 
-##### Format
-
-```
-二向箔清理(): void
+```shell
+没关系的都一样(<arg1>, <arg2>): bool
 ```
 
-##### Example
+`example:`
 
 ```rust
-二向箔清理();
-```
+没关系的都一样([1, [2, 3], { "4": 5 }], [1, [2, 3], { "4": 5 }]);
 
-### Exit
-
-##### Format
-
-```
-毁灭(): void
-```
-
-##### Example
-
-```rust
-毁灭();
+// > true
 ```
 
 ## Summary
@@ -233,7 +211,7 @@ $ 3body -V
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
-
+|deep-equal|没关系的都一样|"It's okay. It's all the same."|
 
 ## Development
 
@@ -242,18 +220,16 @@ $ git clone https://github.com/rustq/3body-lang.git
 
 $ cd 3body-lang
 
-$ make repl
+$ cargo run --features="repl"
 ```
 
 ```
-$ make test
+$ cargo test -p three_body_interpreter
 ```
 
 有更多建议和想法 💡
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
-
-Playground: [https://rustq.github.io/3body-lang/](https://rustq.github.io/3body-lang/)
 
 ## License
 

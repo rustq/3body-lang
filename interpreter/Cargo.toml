@@ -1,0 +1,15 @@
+[package]
+name = "three_body_interpreter"
+description = "Three Body interpreter"
+version = "0.4.0"
+edition = "2021"
+authors = ["meloalright", "rustq"]
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+unicode-xid = { version = "0.2.1" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rand = { version = "0.7.3" }

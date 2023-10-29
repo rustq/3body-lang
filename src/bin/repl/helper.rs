@@ -3,10 +3,10 @@ extern crate rustyline;
 #[cfg(feature = "repl")]
 extern crate rustyline_derive;
 
-use three_body_e2021::lexer::Lexer;
-use three_body_e2021::parser::ParseError;
-use three_body_e2021::parser::Parser;
-use three_body_e2021::token::Token;
+use three_body_interpreter::lexer::Lexer;
+use three_body_interpreter::parser::ParseError;
+use three_body_interpreter::parser::Parser;
+use three_body_interpreter::token::Token;
 
 #[derive(rustyline_derive::Helper, rustyline_derive::Hinter, rustyline_derive::Highlighter, rustyline_derive::Completer)]
 pub struct Helper {

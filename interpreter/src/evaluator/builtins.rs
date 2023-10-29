@@ -1,19 +1,8 @@
 use std::collections::HashMap;
-use std::io::prelude::*;
-use std::fs::File;
-
-use std::cell::RefCell;
-use std::rc::Rc;
 
 extern crate rand;
-// extern crate reqwest;
 
 use crate::evaluator::object::Object;
-use crate::evaluator::Evaluator;
-use crate::evaluator::env::Env;
-
-use crate::lexer::Lexer;
-use crate::parser::Parser;
 
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
@@ -32,18 +21,16 @@ pub fn new_builtins() -> HashMap<String, Object> {
     );
     builtins.insert(String::from("毁灭"), Object::Builtin(0, three_body_exit));
     builtins.insert(String::from("冬眠"), Object::Builtin(1, three_body_sleep));
-    // builtins.insert(String::from("request"), Object::Builtin(1, three_body_request));
-    builtins.insert(
-        String::from("import"),
-        Object::Builtin(1, three_body_import),
-    );
     builtins.insert(
         String::from("random"),
         Object::Builtin(1, three_body_random),
     );
+    builtins.insert(
+        String::from("没关系的都一样"),
+        Object::Builtin(2, three_body_deep_equal),
+    );
     builtins
 }
-
 
 fn monkey_len(args: Vec<Object>) -> Object {
     match &args[0] {
@@ -52,7 +39,6 @@ fn monkey_len(args: Vec<Object>) -> Object {
         o => Object::Error(format!("argument to `len` not supported, got {}", o)),
     }
 }
-
 
 fn monkey_first(args: Vec<Object>) -> Object {
     match &args[0] {
@@ -80,7 +66,6 @@ fn monkey_last(args: Vec<Object>) -> Object {
     }
 }
 
-
 fn monkey_rest(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::Array(o) => {
@@ -94,7 +79,6 @@ fn monkey_rest(args: Vec<Object>) -> Object {
     }
 }
 
-
 fn monkey_push(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::Array(o) => {
@@ -105,7 +89,6 @@ fn monkey_push(args: Vec<Object>) -> Object {
         o => Object::Error(format!("argument to `push` must be array. got {}", o)),
     }
 }
-
 
 fn three_body_puts(args: Vec<Object>) -> Object {
     for arg in args {
@@ -134,49 +117,6 @@ fn three_body_sleep(args: Vec<Object>) -> Object {
     }
 }
 
-// fn three_body_request(args: Vec<Object>) -> Object {
-//     match &args[0] {
-//         Object::String(o) => {
-//             let resp = reqwest::blocking::get(o);
-//             match resp {
-//                 Ok(res) => {
-//                     Object::String(res.text().expect("should be text"))
-//                 },
-//                 Err(error) => {
-//                     Object::Error(format!("request got {}", error))
-//                 }
-//             }
-//         }
-//         _ => Object::Null,
-//     }
-// }
-
-fn three_body_import(args: Vec<Object>) -> Object {
-    match &args[0] {
-        Object::String(o) => {
-            let mut file = File::open(format!("{o}.3body")).expect("Unable to open the file");
-            let mut contents = String::new();
-
-            file.read_to_string(&mut contents)
-                .expect("Unable to read the file");
-
-            let mut parser = Parser::new(Lexer::new(&contents));
-            let program = parser.parse();
-
-            let env = Env::from(new_builtins());
-            let mut evaluator = Evaluator::new(Rc::new(RefCell::new(env)));
-
-            let result = evaluator.eval(&program);
-
-            match result {
-                Some(obj) => return obj,
-                _ => return Object::Null,
-            };
-        }
-        _ => Object::Null,
-    }
-}
-
 #[cfg(not(target_arch = "wasm32"))]
 fn three_body_random(args: Vec<Object>) -> Object {
     match &args[0] {
@@ -189,9 +129,21 @@ fn three_body_random(args: Vec<Object>) -> Object {
     }
 }
 
+fn three_body_deep_equal(args: Vec<Object>) -> Object {
+    if format!("{}", &args[0]) == format!("{}", &args[1]) {
+        Object::Bool(true)
+    } else {
+        Object::Bool(false)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ast;
+    use crate::evaluator::env::Env;
+    use std::cell::RefCell;
+    use std::rc::Rc;
 
     #[test]
     fn test_monkey_len_string() {
@@ -274,5 +226,156 @@ mod tests {
         let args = vec![Object::Array(arr), Object::Int(3)];
         let expected = Object::Array(vec![Object::Int(1), Object::Int(2), Object::Int(3)]);
         assert_eq!(monkey_push(args), expected);
+    }
+
+    #[test]
+    fn test_three_body_deep_equal() {
+        let tests = vec![
+            (vec![Object::Int(1), Object::Int(1)], Object::Bool(true)),
+            (vec![Object::Int(2), Object::Int(1)], Object::Bool(false)),
+            (
+                vec![
+                    Object::String(String::from("hello")),
+                    Object::String(String::from("hello")),
+                ],
+                Object::Bool(true),
+            ),
+            (
+                vec![
+                    Object::String(String::from("hello")),
+                    Object::String(String::from("bye")),
+                ],
+                Object::Bool(false),
+            ),
+            (
+                vec![Object::Bool(true), Object::Bool(true)],
+                Object::Bool(true),
+            ),
+            (
+                vec![Object::Bool(true), Object::Bool(false)],
+                Object::Bool(false),
+            ),
+            (
+                vec![
+                    Object::Array(vec![
+                        Object::Int(1),
+                        Object::Int(2),
+                        Object::Int(3),
+                        Object::String(String::from("hello")),
+                        Object::Bool(true),
+                        Object::Array(vec![Object::Int(1)]),
+                    ]),
+                    Object::Array(vec![
+                        Object::Int(1),
+                        Object::Int(2),
+                        Object::Int(3),
+                        Object::String(String::from("hello")),
+                        Object::Bool(true),
+                        Object::Array(vec![Object::Int(1)]),
+                    ]),
+                ],
+                Object::Bool(true),
+            ),
+            (
+                vec![
+                    Object::Array(vec![
+                        Object::Int(1),
+                        Object::Int(2),
+                        Object::Int(3),
+                        Object::String(String::from("hello")),
+                        Object::Bool(true),
+                    ]),
+                    Object::Array(vec![]),
+                ],
+                Object::Bool(false),
+            ),
+            (
+                vec![
+                    {
+                        let mut hash = HashMap::new();
+                        hash.insert(Object::String("a".to_string()), Object::Int(1));
+                        Object::Hash(hash)
+                    },
+                    {
+                        let mut hash = HashMap::new();
+                        hash.insert(Object::String("a".to_string()), Object::Int(1));
+                        Object::Hash(hash)
+                    },
+                ],
+                Object::Bool(true),
+            ),
+            (
+                vec![
+                    {
+                        let mut hash = HashMap::new();
+                        hash.insert(Object::String("a".to_string()), Object::Int(1));
+                        Object::Hash(hash)
+                    },
+                    {
+                        let mut hash = HashMap::new();
+                        hash.insert(Object::String("b".to_string()), Object::Int(2));
+                        Object::Hash(hash)
+                    },
+                ],
+                Object::Bool(false),
+            ),
+            (
+                vec![
+                    Object::Builtin(1, monkey_first),
+                    Object::Builtin(1, monkey_first),
+                ],
+                Object::Bool(true),
+            ),
+            (
+                vec![
+                    Object::Function(
+                        vec![ast::Ident(String::from("x"))],
+                        vec![],
+                        Rc::new(RefCell::new(Env::new())),
+                    ),
+                    Object::Function(
+                        vec![ast::Ident(String::from("x"))],
+                        vec![],
+                        Rc::new(RefCell::new(Env::new())),
+                    ),
+                ],
+                Object::Bool(true),
+            ),
+            (
+                vec![
+                    Object::Function(
+                        vec![ast::Ident(String::from("x"))],
+                        vec![],
+                        Rc::new(RefCell::new(Env::new())),
+                    ),
+                    Object::Function(
+                        vec![ast::Ident(String::from("y"))],
+                        vec![],
+                        Rc::new(RefCell::new(Env::new())),
+                    ),
+                ],
+                Object::Bool(false),
+            ),
+            (
+                vec![
+                    Object::Builtin(1, monkey_first),
+                    Object::Function(
+                        vec![ast::Ident(String::from("x"))],
+                        vec![],
+                        Rc::new(RefCell::new(Env::new())),
+                    ),
+                ],
+                Object::Bool(false),
+            ),
+            (
+                vec![Object::Int(1), Object::String(String::from("2"))],
+                Object::Bool(false),
+            ),
+        ];
+
+        for (input, expected) in tests {
+            let got = three_body_deep_equal(input);
+            assert_eq!(got, expected);
+        }
     }
 }

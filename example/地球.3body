@@ -1,9 +1,0 @@
-给 rand 以 import("./system/3body/rand");
-
-给 恒纪元 以 rand.custom.(1);
-
-给 suns 以 恒纪元.getSuns();
-
-广播(suns);
-广播("太阳就要落山了，你们的孩子不害怕吗？");
-广播("当然不会，因为他们知道太阳明天还会升起来了。");

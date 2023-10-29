@@ -3,12 +3,12 @@ extern crate rustyline;
 
 pub mod helper;
 
-use three_body_e2021::evaluator::builtins::new_builtins;
-use three_body_e2021::evaluator::env;
-use three_body_e2021::evaluator::Evaluator;
-use three_body_e2021::evaluator::object;
-use three_body_e2021::lexer::Lexer;
-use three_body_e2021::parser::Parser;
+use three_body_interpreter::evaluator::builtins::new_builtins;
+use three_body_interpreter::evaluator::env;
+use three_body_interpreter::evaluator::Evaluator;
+use three_body_interpreter::evaluator::object;
+use three_body_interpreter::lexer::Lexer;
+use three_body_interpreter::parser::Parser;
 use std::cell::RefCell;
 use std::rc::Rc;
 
