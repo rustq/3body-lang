@@ -17,14 +17,22 @@ All from the book [Writing An Interpreter In Go](https://interpreterbook.com/)
 
 Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang) + [flaneur2020/pua-lang](https://github.com/flaneur2020/pua-lang) which also inspired [Monkey-Rust-2021-Edition](https://github.com/meloalright/Monkey-Rust-2021-Edition)
 
-## Installation
+## ⚡️ Installation
 
 ```shell
 $ brew install three-body
 ```
 
+`Program in REPL`
+
 ```shell
-$ 3body -V
+$ 3body
+```
+
+`Get help message`
+
+```shell
+$ 3body -h
 ```
 
 ## Syntax overview
@@ -214,6 +222,20 @@ $ 3body -V
 毁灭();
 ```
 
+### Deep Equal
+
+##### Format
+
+```
+没关系的都一样(<arg1>, <arg2>): void
+```
+
+##### Example
+
+```rust
+没关系的都一样([1, [2, 3], { "4": 5 }], [1, [2, 3], { "4": 5 }]);
+```
+
 ## Summary
 
 |Token|3body-lang|Explanation|
@@ -233,6 +255,43 @@ $ 3body -V
 |sleep|冬眠|"hibernation"|
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
+|deep-equal|没关系的都一样|"It's okay. It's all the same."|
+
+
+## Advanced
+
+
+### Recursion
+
+`递归`
+
+```rust
+给 镜子 以 法则() {
+	广播("白冰移动滑块");
+	镜子()
+}
+
+镜子()
+```
+
+### Closure
+
+`闭包`
+
+```rust
+给 水滴 以 法则() {
+    给 响 = 0;
+    法则() {
+        响 = 响 + 1; 响
+    }
+};
+
+给 撞 = 水滴();
+
+撞();
+撞();
+撞()
+```
 
 
 ## Development
