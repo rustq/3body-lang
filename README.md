@@ -37,9 +37,11 @@ $ 3body
 
 ##### Variable bindings 变量绑定
 
-```
+```shell
 给 <identifier> 以 <expression>;
 ```
+
+`example:`
 
 ```rust
 给 岁月 以 "文明";
@@ -49,9 +51,11 @@ $ 3body
 
 ##### Constant bindings 常量绑定
 
-```
+```shell
 思想钢印 <identifier> = <expression>;
 ```
+
+`example:`
 
 ```rust
 思想钢印 水 = "剧毒的";
@@ -93,9 +97,11 @@ $ 3body
 
 ##### Function 函数定义
 
-```
+```shell
 法则 (<parameter one>, <parameter two>, ...) { <block statement> };
 ```
+
+`example:`
 
 ```rust
 给 黑暗森林 以 法则() {
@@ -108,9 +114,11 @@ $ 3body
 
 ##### Loop 循环语法
 
-```
+```shell
 面壁 (<expression>) { <block statement> };
 ```
+
+`example:`
 
 ```rust
 给 危机纪年 以 3;
@@ -144,9 +152,11 @@ $ 3body
 
 ##### Print 广播
 
-```
+```shell
 广播(<arg1>, <arg2>, ...): void
 ```
+
+`example:`
 
 ```rust
 给 三体世界坐标 以 "半人马星系";
@@ -158,9 +168,11 @@ $ 3body
 
 ##### Sleep 冬眠
 
-```
+```shell
 冬眠(<arg1>): void
 ```
+
+`example:`
 
 ```rust
 冬眠(1000);
@@ -168,29 +180,23 @@ $ 3body
 
 ##### Clear 二向箔清理
 
-```
-二向箔清理(): void
-```
-
 ```rust
 二向箔清理();
 ```
 
 ##### Exit 毁灭
 
-```
-毁灭(): void
-```
-
 ```rust
 毁灭();
 ```
 
-##### Deep Equal 没关系的都一样
+##### Deep-Equal 没关系的都一样
 
-```
+```shell
 没关系的都一样(<arg1>, <arg2>): bool
 ```
+
+`example:`
 
 ```rust
 没关系的都一样([1, [2, 3], { "4": 5 }], [1, [2, 3], { "4": 5 }]);
