@@ -23,29 +23,23 @@ Inspired by [wadackel/rs-monkey-lang](https://github.com/wadackel/rs-monkey-lang
 $ brew install three-body
 ```
 
-`Program in REPL`
-
-```shell
-$ 3body
-```
-
-`Get help message`
+## ⚡️ Quick Start
 
 ```shell
 $ 3body -h
 ```
 
-## Syntax overview
+```shell
+$ 3body
+```
 
-### Variable bindings
+## Syntax Overview
 
-##### Format
+##### Variable bindings 变量绑定
 
 ```
 给 <identifier> 以 <expression>;
 ```
-
-##### Example
 
 ```rust
 给 岁月 以 "文明";
@@ -53,23 +47,17 @@ $ 3body -h
 给 时光 以 "生命";
 ```
 
-### Constant bindings
-
-##### Format
+##### Constant bindings 常量绑定
 
 ```
 思想钢印 <identifier> = <expression>;
 ```
 
-##### Example
-
 ```rust
 思想钢印 水 = "剧毒的";
 ```
 
-### Operators
-
-##### 前进(+)运算符
+##### 前进(+) 运算符
 
 ```rust
 给 自然选择 以 0;
@@ -79,7 +67,7 @@ $ 3body -h
 // > 4
 ```
 
-##### 降维(-)运算符
+##### 降维(-) 运算符
 
 ```rust
 给 宇宙 以 { "维度": 10 };
@@ -89,7 +77,7 @@ $ 3body -h
 // > 3
 ```
 
-### Boolean
+##### Boolean 布尔值
 
 ```rust
 这是计划的一部分
@@ -103,15 +91,11 @@ $ 3body -h
 // > false
 ```
 
-### Function
-
-##### Format
+##### Function 函数定义
 
 ```
 法则 (<parameter one>, <parameter two>, ...) { <block statement> };
 ```
-
-##### Example
 
 ```rust
 给 黑暗森林 以 法则() {
@@ -122,15 +106,11 @@ $ 3body -h
 黑暗森林()
 ```
 
-### Loop
-
-##### Format
+##### Loop 循环语法
 
 ```
 面壁 (<expression>) { <block statement> };
 ```
-
-##### Example
 
 ```rust
 给 危机纪年 以 3;
@@ -230,7 +210,7 @@ $ cargo run --features="repl"
 ```
 
 ```
-$ make test
+$ cargo test -p three_body_interpreter
 ```
 
 有更多建议和想法 💡
