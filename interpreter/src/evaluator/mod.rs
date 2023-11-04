@@ -46,8 +46,21 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let ast::Ident(name) = ident;
-                    self.env.borrow_mut().set(name.clone(), value);
-                    None
+                    let mut env_borrow_mut = self.env.borrow_mut();
+                    match env_borrow_mut.check_inner(name.clone()) {
+                        env::CheckInnerInfo::ConstantExist => Some(object::Object::Error(format!(
+                            "{} {}!",
+                            "Can not redeclare constant variable", name
+                        ))),
+                        env::CheckInnerInfo::VariableExist => Some(object::Object::Error(format!(
+                            "{} {}!",
+                            "Can not redeclare variable", name
+                        ))),
+                        env::CheckInnerInfo::NoIdentifier => {
+                            env_borrow_mut.set(name.clone(), value);
+                            None
+                        },
+                    }
                 }
             }
             ast::Stmt::Const(ident, expr) => {
@@ -59,9 +72,22 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let ast::Ident(name) = ident;
-                    self.env.borrow_mut().set(name.clone(), value);
-                    self.env.borrow_mut().constant(name.clone());
-                    None
+                    let mut env_borrow_mut = self.env.borrow_mut();
+                    match env_borrow_mut.check_inner(name.clone()) {
+                        env::CheckInnerInfo::ConstantExist => Some(object::Object::Error(format!(
+                            "{} {}!",
+                            "Can not redeclare constant variable", name
+                        ))),
+                        env::CheckInnerInfo::VariableExist => Some(object::Object::Error(format!(
+                            "{} {}!",
+                            "Can not redeclare variable", name
+                        ))),
+                        env::CheckInnerInfo::NoIdentifier => {
+                            env_borrow_mut.set(name.clone(), value);
+                            env_borrow_mut.constant(name.clone());
+                            None
+                        },
+                    }
                 }
             }
             ast::Stmt::Break => Some(object::Object::BreakStatement),
@@ -84,15 +110,15 @@ impl Evaluator {
                 } else {
                     let ast::Ident(name) = ident;
                     match self.env.borrow_mut().update(name.clone(), value) {
-                        env::Info::ConstantForbidden => Some(object::Object::Error(format!(
+                        env::UpdateInfo::ConstantForbidden => Some(object::Object::Error(format!(
                             "{} {}!",
                             "Can not assign to constant variable", name
                         ))),
-                        env::Info::NoIdentifier => Some(object::Object::Error(format!(
+                        env::UpdateInfo::NoIdentifier => Some(object::Object::Error(format!(
                             "{} {}!",
                             "No identifier", name
                         ))),
-                        env::Info::Succeed => None,
+                        env::UpdateInfo::Succeed => None,
                     }
                 }
             }
@@ -793,6 +819,9 @@ if (10 > 1) {
                 "let a = 5; let b = a; let c = a + b + 5; c;",
                 Some(object::Object::Int(15)),
             ),
+            ("let a = 5; let a = 1;", Some(object::Object::Error(
+                "Can not redeclare variable a!".to_owned(),
+            ))),
         ];
 
         for (input, expect) in tests {
@@ -806,6 +835,16 @@ if (10 > 1) {
             "const a = 5; a = 3;",
             Some(object::Object::Error(
                 "Can not assign to constant variable a!".to_owned(),
+            )),
+        ), (
+            "const a = 5; let a = 3;",
+            Some(object::Object::Error(
+                "Can not redeclare constant variable a!".to_owned(),
+            )),
+        ), (
+            "const a = 5; const a = 3;",
+            Some(object::Object::Error(
+                "Can not redeclare constant variable a!".to_owned(),
             )),
         )];
 
