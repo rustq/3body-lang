@@ -16,10 +16,17 @@ pub struct Env {
 }
 
 #[derive(PartialEq, Clone, Debug)]
-pub enum Info {
+pub enum UpdateInfo {
     ConstantForbidden,
     NoIdentifier,
     Succeed,
+}
+
+#[derive(PartialEq, Clone, Debug)]
+pub enum CheckInnerInfo {
+    ConstantExist,
+    VariableExist,
+    NoIdentifier,
 }
 
 impl Env {
@@ -47,23 +54,37 @@ impl Env {
         }
     }
 
+    pub fn check_inner(&mut self, name: String) -> CheckInnerInfo {
+        match self.identifiers.contains_key(&name) {
+            true => {
+                if self.is_constant(name.clone()) {
+                    return CheckInnerInfo::ConstantExist;
+                }
+                CheckInnerInfo::VariableExist
+            },
+            false => {
+                CheckInnerInfo::NoIdentifier
+            }
+        }
+    }
+
     pub fn set(&mut self, name: String, value: Object) {
         self.identifiers.insert(name, value.clone());
     }
 
-    pub fn update(&mut self, name: String, value: Object) -> Info {
+    pub fn update(&mut self, name: String, value: Object) -> UpdateInfo {
         match self.identifiers.contains_key(&name) {
             true => {
                 if self.is_constant(name.clone()) {
-                    return Info::ConstantForbidden;
+                    return UpdateInfo::ConstantForbidden;
                 }
                 self.identifiers.insert(name.clone(), value.clone());
-                return Info::Succeed;
+                return UpdateInfo::Succeed;
             },
             false => {
                 match self.outer {
                     Some(ref outer) => outer.borrow_mut().update(name, value),
-                    None => Info::NoIdentifier,
+                    None => UpdateInfo::NoIdentifier,
                 }
             }
         }
@@ -153,7 +174,7 @@ mod tests {
     fn test_update_succeed() {
         let mut env = Env::new();
         env.set("key".to_string(), Object::Int(1));
-        assert_eq!(env.update("key".to_string(), Object::Int(2)), Info::Succeed);
+        assert_eq!(env.update("key".to_string(), Object::Int(2)), UpdateInfo::Succeed);
     }
 
     #[test]
@@ -161,13 +182,13 @@ mod tests {
         let mut env = Env::new();
         env.set("key".to_string(), Object::Int(1));
         env.constant("key".to_string());
-        assert_eq!(env.update("key".to_string(), Object::Int(2)), Info::ConstantForbidden);
+        assert_eq!(env.update("key".to_string(), Object::Int(2)), UpdateInfo::ConstantForbidden);
     }
 
     #[test]
     fn test_update_no_identifier() {
         let mut env = Env::new();
-        assert_eq!(env.update("key".to_string(), Object::Int(2)), Info::NoIdentifier);
+        assert_eq!(env.update("key".to_string(), Object::Int(2)), UpdateInfo::NoIdentifier);
     }
 
     #[test]
@@ -176,8 +197,8 @@ mod tests {
         let outer = Rc::new(RefCell::new(Env::new_with_outer(global.clone())));
         let mut env = Env::new_with_outer(outer.clone());
         outer.as_ref().borrow_mut().set("key".to_string(), Object::Int(2));
-        assert_eq!(outer.as_ref().borrow_mut().update("key".to_string(), Object::Int(2)), Info::Succeed);
-        assert_eq!(env.update("key".to_string(), Object::Int(2)), Info::Succeed);
-        assert_eq!(global.as_ref().borrow_mut().update("key".to_string(), Object::Int(2)), Info::NoIdentifier);
+        assert_eq!(outer.as_ref().borrow_mut().update("key".to_string(), Object::Int(2)), UpdateInfo::Succeed);
+        assert_eq!(env.update("key".to_string(), Object::Int(2)), UpdateInfo::Succeed);
+        assert_eq!(global.as_ref().borrow_mut().update("key".to_string(), Object::Int(2)), UpdateInfo::NoIdentifier);
     }
 }
