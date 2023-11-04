@@ -284,7 +284,7 @@ dependencies = [
 
 [[package]]
 name = "three_body_interpreter"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "rand",
  "unicode-xid",
@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "three_body_lang"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "rustyline",
  "rustyline-derive",
