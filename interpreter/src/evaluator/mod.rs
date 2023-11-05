@@ -1225,4 +1225,21 @@ f()
 
         assert_eq!(Some(object::Object::Int(5)), eval(input));
     }
+
+    #[test]
+    fn test_comment() {
+        let tests = vec![
+            (
+                "let identity = fn(x) { // function defination here
+x; // just x
+};
+identity(5); // run with param 5",
+                Some(object::Object::Int(5)),
+            ),
+        ];
+
+        for (input, expect) in tests {
+            assert_eq!(expect, eval(input));
+        }
+    }
 }
