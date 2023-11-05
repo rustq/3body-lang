@@ -1891,6 +1891,29 @@ return 993322;
         );
     }
 
+    #[test]
+    fn test_comment() {
+        let input = "fn(x, y){
+x + y // just return x + y 即可
+}";
+
+        let mut parser = Parser::new(Lexer::new(input));
+        let program = parser.parse();
+
+        check_parse_errors(&mut parser);
+        assert_eq!(
+            vec![Stmt::Expr(Expr::Function {
+                params: vec![Ident(String::from("x")), Ident(String::from("y"))],
+                body: vec![Stmt::Expr(Expr::Infix(
+                    Infix::Plus,
+                    Box::new(Expr::Ident(Ident(String::from("x")))),
+                    Box::new(Expr::Ident(Ident(String::from("y")))),
+                ))],
+            })],
+            program,
+        );
+    }
+
     /// errors panic
 
     #[test]
