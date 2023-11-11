@@ -11,6 +11,7 @@ use three_body_interpreter::lexer::Lexer;
 use three_body_interpreter::parser::Parser;
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::fs;
 
 
 fn main() {
@@ -50,7 +51,7 @@ fn main() {
                     }
                 }
             }
-            _ => {
+            "-h" => {
                 println!("usage: 3body [option] ... [arg] ...
 
 Options and arguments:
@@ -60,6 +61,27 @@ Options and arguments:
 -c cmd : program passed in as string (terminates option list)
 -      : program in repl (default)
 ")
+            },
+            path => {
+                let contents = fs::read_to_string(path).expect("Should have been able to read the file");
+                let mut lexer = Lexer::new(&contents);
+                let mut parser = Parser::new(lexer);
+                let program = parser.parse();
+                let errors = parser.get_errors();
+
+                if errors.len() > 0 {
+                    for err in errors {
+                        println!("{:?}", err);
+                    }
+                    return;
+                }
+
+                if let Some(evaluated) = evaluator.eval(&program) {
+                    match evaluated {
+                        object::Object::Null => {},
+                        _ => println!("{}\n", evaluated),
+                    }
+                }
             }
         }
         return;
