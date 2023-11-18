@@ -63,7 +63,15 @@ impl Lexer {
         let tok = match self.ch {
             '+' => Token::Plus,
             '-' => Token::Minus,
-            '/' => Token::Slash,
+            '/' => {
+                if self.next_is('/') {
+                    self.walk_char();
+                    self.skip_comment();
+                    return self.next_token();
+                } else {
+                    Token::Slash
+                }
+            },
             '*' => Token::Asterisk,
             '<' => {
                 if self.next_is('=') {
@@ -179,6 +187,13 @@ impl Lexer {
                 break;
             }
         }
+    }
+
+    fn skip_comment(&mut self) {
+        while !matches!(self.next_ch(), '\n' | '\0') {
+            self.walk_char();
+        }
+        self.walk_char();
     }
 
     fn consume_identifier(&mut self) -> Token {
@@ -331,6 +346,9 @@ if (5 < 10) {
 "foobar";
 "foo bar";
 'foo bar';
+"foobar";//
+"foo bar"; // just a comment
+'foo bar';        // 一段注释
 
 [1, 2];
 
@@ -426,6 +444,12 @@ if (5 < 10) {
             Token::Int(10),
             Token::GT,
             Token::Int(10),
+            Token::Semicolon,
+            Token::String(String::from("foobar")),
+            Token::Semicolon,
+            Token::String(String::from("foo bar")),
+            Token::Semicolon,
+            Token::String(String::from("foo bar")),
             Token::Semicolon,
             Token::String(String::from("foobar")),
             Token::Semicolon,
