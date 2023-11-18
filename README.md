@@ -231,6 +231,10 @@ $ cargo test -p three_body_interpreter
 
 Create issues: [issues](https://github.com/rustq/3body-lang/issues)
 
+## Visual Studio Code Extension
+
+[3body-vscode-language-server](https://marketplace.visualstudio.com/items?itemName=meloalright.3body-vscode-language-server)
+
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
