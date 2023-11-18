@@ -87,6 +87,8 @@ Options and arguments:
         return;
     }
 
+    println!("欢迎来到三体世界！");
+
     loop {
         match rl.readline(">> ") {
             Ok(line) => {
