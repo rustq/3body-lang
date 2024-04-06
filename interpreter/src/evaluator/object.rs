@@ -12,6 +12,11 @@ use crate::lexer::unescape::escape_str;
 pub type BuiltinFunc = fn(Vec<Object>) -> Object;
 
 #[derive(PartialEq, Clone, Debug)]
+pub enum NativeObject {
+    LLMModel(*mut dyn llm::Model),
+}
+
+#[derive(PartialEq, Clone, Debug)]
 pub enum Object {
     Int(i64),
     String(String),
@@ -25,7 +30,7 @@ pub enum Object {
     ContinueStatement,
     Error(String),
     Null,
-    NativeObject(*mut dyn llm::Model),
+    Native(Box<NativeObject>),
 }
 
 /// This is actually repr
@@ -74,7 +79,7 @@ impl fmt::Display for Object {
             Object::ContinueStatement => write!(f, "ContinueStatement"),
             Object::ReturnValue(ref value) => write!(f, "ReturnValue({})", value),
             Object::Error(ref value) => write!(f, "Error({})", value),
-            Object::NativeObject(ref model) => write!(f, "NativeObject({:?})", (model)),
+            Object::Native(ref model) => write!(f, "NativeObject({:?})", (model)),
         }
     }
 }

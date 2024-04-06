@@ -3,6 +3,7 @@ use std::collections::HashMap;
 extern crate rand;
 
 use crate::evaluator::object::Object;
+use crate::evaluator::object::NativeObject;
 
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
@@ -150,8 +151,13 @@ fn three_body_sophon_infer(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::Hash(hash) => {
             let model_ptr = match hash.get(&Object::String("model".to_owned())).unwrap() {
-                Object::NativeObject(model_ptr) => {
-                    model_ptr.clone()
+                Object::Native(native_object) => {
+                    match **native_object {
+                        NativeObject::LLMModel(model_ptr) => {
+                            model_ptr.clone()
+                        },
+                        _ => panic!()
+                    }
                 },
                 _ => panic!()
             };
@@ -225,8 +231,13 @@ fn three_body_sophon_close(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::Hash(hash) => {
             let model_ptr = match hash.get(&Object::String("model".to_owned())).unwrap() {
-                Object::NativeObject(model_ptr) => {
-                    model_ptr.clone()
+                Object::Native(native_object) => {
+                    match **native_object {
+                        NativeObject::LLMModel(model_ptr) => {
+                            model_ptr.clone()
+                        },
+                        _ => panic!()
+                    }
                 },
                 _ => panic!()
             };
@@ -306,7 +317,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
             let model_ptr = &mut *model as *mut dyn Model;
 
             let mut session_hash = HashMap::new();
-            session_hash.insert(Object::String("model".to_owned()), Object::NativeObject(model_ptr));
+            session_hash.insert(Object::String("model".to_owned()), Object::Native(Box::new(NativeObject::LLMModel(model_ptr))));
             session_hash.insert(Object::String("character".to_owned()), Object::String(character.to_string()));
             session_hash.insert(Object::String("infer".to_owned()), Object::Builtin(2, three_body_sophon_infer));
             session_hash.insert(Object::String("close".to_owned()), Object::Builtin(1, three_body_sophon_close));
