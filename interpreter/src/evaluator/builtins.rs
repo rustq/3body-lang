@@ -7,6 +7,11 @@ use crate::evaluator::object::Object;
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
 
+use llm::{load_progress_callback_stdout as load_callback, InferenceParameters, Model};
+use llm_base::InferenceRequest;
+use std::{convert::Infallible, io::Write, path::Path};
+use spinoff;
+
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
     builtins.insert(String::from("len"), Object::Builtin(1, monkey_len));
@@ -28,6 +33,10 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(
         String::from("没关系的都一样"),
         Object::Builtin(2, three_body_deep_equal),
+    );
+    builtins.insert(
+        String::from("智子工程"),
+        Object::Builtin(1, three_body_sophon_engineering),
     );
     builtins
 }
@@ -134,6 +143,176 @@ fn three_body_deep_equal(args: Vec<Object>) -> Object {
         Object::Bool(true)
     } else {
         Object::Bool(false)
+    }
+}
+
+fn three_body_sophon_infer(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Hash(hash) => {
+            let model_ptr = match hash.get(&Object::String("model".to_owned())).unwrap() {
+                Object::NativeObject(model_ptr) => {
+                    model_ptr.clone()
+                },
+                _ => panic!()
+            };
+            let character = hash.get(&Object::String("character".to_owned())).unwrap();
+            let model = unsafe { & *model_ptr };
+
+            let mut session = model.start_session(Default::default());
+            let meessage = format!("{}", &args[1]);
+            let prompt = &format!("
+下面是描述一项任务的说明。需要适当地完成请求的响应。
+
+### 角色设定:
+
+{}
+
+### 提问:
+
+{}
+
+### 回答:
+
+", character, meessage);
+
+            let sp = spinoff::Spinner::new(spinoff::spinners::Arc, "".to_string(), None);
+
+            if let Err(llm::InferenceError::ContextFull) = session.feed_prompt::<Infallible>(
+                model,
+                &InferenceParameters {
+                    ..Default::default()
+                },
+                prompt,
+                &mut Default::default(),
+                |t| {
+                    Ok(())
+                },
+            ) {
+                println!("Prompt exceeds context window length.")
+            };
+            sp.clear();
+
+            let res = session.infer::<Infallible>(
+                model,
+                &mut thread_rng(),
+                &InferenceRequest {
+                    prompt: "",
+                    ..Default::default()
+                },
+                // OutputRequest
+                &mut Default::default(),
+                |t| {
+                    print!("{t}");
+                    std::io::stdout().flush().unwrap();
+    
+                    Ok(())
+                },
+            );
+    
+            match res {
+                Err(err) => println!("\n{err}"),
+                _ => ()
+            }
+            Object::Null
+        },
+        _ => panic!()
+    }
+}
+
+
+
+fn three_body_sophon_close(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Hash(hash) => {
+            let model_ptr = match hash.get(&Object::String("model".to_owned())).unwrap() {
+                Object::NativeObject(model_ptr) => {
+                    model_ptr.clone()
+                },
+                _ => panic!()
+            };
+            // let model = unsafe { & *model_ptr };
+            unsafe { Box::from_raw(model_ptr) };
+            // std::mem::drop(model);
+            Object::Null
+        },
+        _ => panic!()
+    }
+}
+
+
+fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Hash(o) => {
+            let model_type = o[&Object::String("type".to_owned())].clone();
+            let model_path = o[&Object::String("path".to_owned())].clone();
+            let prompt = o[&Object::String("prompt".to_owned())].clone();
+
+            let now = std::time::Instant::now();
+
+            let model_type = {
+                match model_type {
+                    Object::String(model_type) => {
+                        model_type
+                    },
+                    _ => {
+                        panic!()
+                    }
+                }
+            };
+
+            let model_type = model_type.as_str();
+            
+
+            let model_path = {
+                match model_path {
+                    Object::String(path) => {
+                        path
+                    },
+                    _ => {
+                        panic!()
+                    }
+                }
+            };
+
+            let model_path = Path::new(model_path.as_str());
+
+            let prompt = {
+                match prompt {
+                    Object::String(prompt) => {
+                        prompt
+                    },
+                    _ => {
+                        panic!()
+                    }
+                }
+            };
+
+            let character = prompt;
+
+            let architecture = model_type.parse().unwrap_or_else(|e| panic!("{e}"));
+
+            let model = llm::load_dynamic(architecture, model_path, Default::default(), load_callback)
+                .unwrap_or_else(|err| {
+                    panic!("Failed to load {model_type} model from {model_path:?}: {err}")
+                });
+            
+            let model = Box::leak(model);
+
+            println!(
+                "智子工程初始化成功: 耗时 {} ms",
+                now.elapsed().as_millis()
+            );
+
+            let model_ptr = &mut *model as *mut dyn Model;
+
+            let mut session_hash = HashMap::new();
+            session_hash.insert(Object::String("model".to_owned()), Object::NativeObject(model_ptr));
+            session_hash.insert(Object::String("character".to_owned()), Object::String(character.to_string()));
+            session_hash.insert(Object::String("infer".to_owned()), Object::Builtin(2, three_body_sophon_infer));
+            session_hash.insert(Object::String("close".to_owned()), Object::Builtin(1, three_body_sophon_close));
+            Object::Hash(session_hash)
+        }
+        _ => Object::Null,
     }
 }
 

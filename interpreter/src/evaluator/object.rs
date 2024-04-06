@@ -3,6 +3,8 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
+use llm;
+
 use crate::evaluator::env;
 use crate::ast;
 use crate::lexer::unescape::escape_str;
@@ -23,6 +25,7 @@ pub enum Object {
     ContinueStatement,
     Error(String),
     Null,
+    NativeObject(*mut dyn llm::Model),
 }
 
 /// This is actually repr
@@ -71,6 +74,7 @@ impl fmt::Display for Object {
             Object::ContinueStatement => write!(f, "ContinueStatement"),
             Object::ReturnValue(ref value) => write!(f, "ReturnValue({})", value),
             Object::Error(ref value) => write!(f, "Error({})", value),
+            Object::NativeObject(ref model) => write!(f, "NativeObject({:?})", (model)),
         }
     }
 }

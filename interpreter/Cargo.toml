@@ -12,4 +12,8 @@ license = "MIT"
 unicode-xid = { version = "0.2.1" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-rand = { version = "0.7.3" }
+rand = { version = "0.8.5" }
+
+llm = { version = "0.1.1" }
+llm-base = { version = "0.1.1" }
+spinoff = { version = "0.7.0", default-features = false, features = ["dots", "arc", "line"] }
