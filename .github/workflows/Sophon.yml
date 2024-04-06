@@ -22,7 +22,7 @@ jobs:
 
     - name: Repl
       run: |
-        cargo build --features="repl"
+        cargo build --features="repl" --release
 
     - name: LLama
       run: |
