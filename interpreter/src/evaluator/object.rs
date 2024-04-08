@@ -3,6 +3,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
+#[cfg(feature="sophon")]
 use llm;
 
 use crate::evaluator::env;
@@ -13,6 +14,7 @@ pub type BuiltinFunc = fn(Vec<Object>) -> Object;
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum NativeObject {
+    #[cfg(feature="sophon")]
     LLMModel(*mut dyn llm::Model),
 }
 

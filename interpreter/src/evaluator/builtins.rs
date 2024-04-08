@@ -8,9 +8,13 @@ use crate::evaluator::object::NativeObject;
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
 
+#[cfg(feature="sophon")]
 use llm::{load_progress_callback_stdout as load_callback, InferenceParameters, Model};
+#[cfg(feature="sophon")]
 use llm_base::InferenceRequest;
+#[cfg(feature="sophon")]
 use std::{convert::Infallible, io::Write, path::Path};
+#[cfg(feature="sophon")]
 use spinoff;
 
 pub fn new_builtins() -> HashMap<String, Object> {
@@ -35,6 +39,7 @@ pub fn new_builtins() -> HashMap<String, Object> {
         String::from("没关系的都一样"),
         Object::Builtin(2, three_body_deep_equal),
     );
+    #[cfg(feature="sophon")]
     builtins.insert(
         String::from("智子工程"),
         Object::Builtin(1, three_body_sophon_engineering),
@@ -147,6 +152,7 @@ fn three_body_deep_equal(args: Vec<Object>) -> Object {
     }
 }
 
+#[cfg(feature="sophon")]
 fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
     match &args[0] {
         Object::Hash(o) => {
