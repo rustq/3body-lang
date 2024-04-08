@@ -192,46 +192,6 @@ $ 3body
 // > true
 ```
 
-##### Large Language Model
-
-```shell
-智子工程({ "type": <string>, "path": <string>, "prompt": <string> })
-```
-
-`properties:`
-
-|property|type|Explanation|
-|---|---|---|
-|type|string|模型类型|
-|path|string|模型所在路径|
-|prompt|string|提示词|
-
-
-`interface:`
-
-|property|type|Explanation|
-|---|---|---|
-|model|<NativeObject::LLMModel>|模型|
-|character|string|提示词所提示的角色|
-|infer|BuiltinFunc|执行推理的方法|
-|close|BuiltinFunc|关闭会话|
-
-
-`example:`
-
-```rust
-let 智子 = fn () {
-  let instance = 智子工程({ "type": "llama", "path": "./Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" });
-  return { "回答": fn (问题) { instance.infer(instance, 问题) } }
-}();
-
-智子.回答("中国最佳科幻小说是哪个")
-
-// > 推理中...
-```
-
-推理示例: [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
-
 ## Summary
 
 |Token|3body-lang|Explanation|
@@ -252,6 +212,50 @@ let 智子 = fn () {
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |deep-equal|没关系的都一样|"It's okay. It's all the same."|
+
+## 🤗 Large Language Model
+
+三体编程语言可以通过 "智子工程" 加载本地大语言模型进行推理，不过目前仍然是一个实验功能。
+
+Able to use three body language sophon to load a local LLM for reasoning, inspired by [wiki/Sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
+
+##### Sophon 智子工程
+
+```shell
+智子工程({ "type": <string>, "path": <string>, "prompt": <string> })
+```
+
+##### Initialize Properties 初始化参数
+
+|property|type|Explanation|
+|---|---|---|
+|type|string|模型类型|
+|path|string|模型所在路径|
+|prompt|string|提示词|
+
+##### APIs
+
+|property|type|Explanation|
+|---|---|---|
+|model|<NativeObject::LLMModel>|模型|
+|character|string|提示词所提示的角色|
+|infer|BuiltinFunc|执行推理的方法|
+|close|BuiltinFunc|关闭会话|
+
+##### Reasoning 本地推理
+
+```rust
+let 智子 = fn () {
+  let instance = 智子工程({ "type": "llama", "path": "./Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" });
+  return { "回答": fn (问题) { instance.infer(instance, 问题) } }
+}();
+
+智子.回答("中国最佳科幻小说是哪个")
+
+// > 推理中...
+```
+
+Reasoning Example 推理示例: [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
 
 ## Development
 
