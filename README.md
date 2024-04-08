@@ -221,7 +221,7 @@ $ 3body
 
 Able to use three body language sophon to load a local large language model for reasoning, inspired by [wiki/Sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
 
-![sophon](https://github.com/rustq/3body-lang/assets/11075892/b5ddbe31-2f67-4b49-b3eb-1168419e5a43)
+![sophon](https://github.com/rustq/3body-lang/assets/11075892/4579ecbe-3e52-4b0f-8f0b-31e3b071a79b)
 
 #### Sophon Initializing
 
