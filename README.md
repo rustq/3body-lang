@@ -245,8 +245,6 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 // > 推理中...
 ```
 
-⚛️ Example: [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
-
 |property|type|Explanation|
 |---|---|---|
 |model|<NativeObject::LLMModel>|模型|
@@ -254,6 +252,7 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 |infer|BuiltinFunc|执行推理的方法|
 |close|BuiltinFunc|关闭会话|
 
+⚛️ Example: [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
 
 ## Development
 
