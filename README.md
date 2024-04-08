@@ -217,7 +217,7 @@ $ 3body
 
 三体编程语言可以通过 "智子工程" 加载本地大语言模型进行推理，不过目前仍然是一个实验功能。
 
-Able to use three body language sophon to load a local LLM for reasoning, inspired by [wiki/Sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
+Able to use three body language sophon to load a local large language model for reasoning, inspired by [wiki/Sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
 
 ##### Sophon 智子工程
 
