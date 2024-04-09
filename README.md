@@ -3,6 +3,8 @@
 [![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://opensource.org/licenses/MIT)
 [![Package version](https://img.shields.io/crates/v/three_body_lang.svg)](https://crates.io/crates/three_body_lang)
 [![Workflow](https://github.com/rustq/3body-lang/actions/workflows/CI.yml/badge.svg)](https://github.com/rustq/3body-lang/actions)
+[![HomeBrew](https://img.shields.io/homebrew/v/three-body
+)](https://formulae.brew.sh/formula/three-body)
 
 
 三体编程语言 Three Body Language written in Rust
