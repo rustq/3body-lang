@@ -213,7 +213,7 @@ $ 3body
 |exit|毁灭|"destroy"|
 |deep-equal|没关系的都一样|"It's okay. It's all the same."|
 
-## 🤗 Large Language Model
+## 🤗 LLM
 
 ![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)
 
@@ -252,7 +252,10 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 |infer|BuiltinFunc|执行推理的方法|
 |close|BuiltinFunc|关闭会话|
 
-⚛️ Example: [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
+
+⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
+
+Model powered by [huantian2415/vicuna-13b-chinese-4bit-ggml](https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml)
 
 ## Development
 
