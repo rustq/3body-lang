@@ -248,8 +248,8 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 |property|type|Explanation|
 |---|---|---|
 |model|<NativeObject::LLMModel>|模型|
-|character|string|提示词所提示的角色|
-|infer|BuiltinFunc|执行推理的方法|
+|character|string|提示词角色|
+|infer|BuiltinFunc|执行推理|
 |close|BuiltinFunc|关闭会话|
 
 [![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
