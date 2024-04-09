@@ -3,11 +3,20 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
+#[cfg(feature="sophon")]
+use llm;
+
 use crate::evaluator::env;
 use crate::ast;
 use crate::lexer::unescape::escape_str;
 
 pub type BuiltinFunc = fn(Vec<Object>) -> Object;
+
+#[derive(PartialEq, Clone, Debug)]
+pub enum NativeObject {
+    #[cfg(feature="sophon")]
+    LLMModel(*mut dyn llm::Model),
+}
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Object {
@@ -23,6 +32,7 @@ pub enum Object {
     ContinueStatement,
     Error(String),
     Null,
+    Native(Box<NativeObject>),
 }
 
 /// This is actually repr
@@ -71,6 +81,7 @@ impl fmt::Display for Object {
             Object::ContinueStatement => write!(f, "ContinueStatement"),
             Object::ReturnValue(ref value) => write!(f, "ReturnValue({})", value),
             Object::Error(ref value) => write!(f, "Error({})", value),
+            Object::Native(ref model) => write!(f, "NativeObject({:?})", (model)),
         }
     }
 }

@@ -2,7 +2,9 @@
 
 [![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://opensource.org/licenses/MIT)
 [![Package version](https://img.shields.io/crates/v/three_body_lang.svg)](https://crates.io/crates/three_body_lang)
-[![Workflow](https://img.shields.io/github/actions/workflow/status/rustq/3body-lang/CI.yml?branch=main)](https://github.com/rustq/3body-lang/actions)
+[![Workflow](https://github.com/rustq/3body-lang/actions/workflows/CI.yml/badge.svg)](https://github.com/rustq/3body-lang/actions)
+[![HomeBrew](https://img.shields.io/homebrew/v/three-body
+)](https://formulae.brew.sh/formula/three-body)
 
 
 三体编程语言 Three Body Language written in Rust
@@ -212,6 +214,49 @@ $ 3body
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |deep-equal|没关系的都一样|"It's okay. It's all the same."|
+
+## 🤗 LLM
+
+三体编程语言可以通过 "智子工程" 加载本地大语言模型进行推理。
+
+Able to use three body language sophon to load a local large language model for reasoning, inspired by [wiki/sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
+
+![sophon](https://github.com/rustq/3body-lang/assets/11075892/4579ecbe-3e52-4b0f-8f0b-31e3b071a79b)
+
+#### Sophon Initializing
+
+```shell
+智子工程({ "type": <string>, "path": <string>, "prompt": <string> })
+```
+
+|property|type|Explanation|
+|---|---|---|
+|type|string|模型类型|
+|path|string|模型所在路径|
+|prompt|string|提示词|
+
+#### Reasoning
+
+```rust
+let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" }); return { "回答": fn (问题) { instance.infer(instance, 问题) } } }();
+
+智子.回答("中国最佳科幻小说是哪个")
+
+// > 推理中...
+```
+
+|property|type|Explanation|
+|---|---|---|
+|model|<NativeObject::LLMModel>|模型|
+|character|string|提示词角色|
+|infer|BuiltinFunc|执行推理|
+|close|BuiltinFunc|关闭会话|
+
+[![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)](https://github.com/rustq/3body-lang/actions/)
+
+⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8615738887/job/23611889961#step:5:8794)
+
+Model powered by [huantian2415/vicuna-13b-chinese-4bit-ggml](https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml)
 
 ## Development
 

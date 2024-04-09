@@ -1,7 +1,7 @@
 [package]
 name = "three_body_interpreter"
 description = "Three Body interpreter"
-version = "0.4.5"
+version = "0.6.0"
 edition = "2021"
 authors = ["meloalright", "rustq"]
 license = "MIT"
@@ -12,4 +12,12 @@ license = "MIT"
 unicode-xid = { version = "0.2.1" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-rand = { version = "0.7.3" }
+rand = { version = "0.8.5" }
+
+llm = { version = "0.1.1", optional = true }
+llm-base = { version = "0.1.1", optional = true }
+spinoff = { version = "0.7.0", default-features = false, features = ["dots", "arc", "line"], optional = true }
+
+[features]
+default = []
+sophon = ["llm", "llm-base", "spinoff"]
