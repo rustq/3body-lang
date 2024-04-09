@@ -215,8 +215,6 @@ $ 3body
 
 ## 🤗 LLM
 
-![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)
-
 三体编程语言可以通过 "智子工程" 加载本地大语言模型进行推理。
 
 Able to use three body language sophon to load a local large language model for reasoning, inspired by [wiki/sophon](https://three-body-problem.fandom.com/wiki/Sophon) and powered by [rustformers/llm](https://github.com/rustformers/llm).
@@ -252,6 +250,7 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 |infer|BuiltinFunc|执行推理的方法|
 |close|BuiltinFunc|关闭会话|
 
+[![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
 
 ⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/8582743599](https://github.com/rustq/3body-lang/actions/runs/8582743599/job/23521175335#step:5:8796)
 
