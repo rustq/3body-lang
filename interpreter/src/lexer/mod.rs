@@ -89,10 +89,10 @@ impl Lexer {
                     Token::GT
                 }
             },
-            ';' => Token::Semicolon,
-            ',' => Token::Comma,
-            '(' => Token::LParen,
-            ')' => Token::RParen,
+            ';' | '；' => Token::Semicolon,
+            ',' | '，' => Token::Comma,
+            '(' | '（' => Token::LParen,
+            ')' | '）' => Token::RParen,
             '{' => Token::LBrace,
             '}' => Token::RBrace,
             '=' => {
