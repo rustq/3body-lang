@@ -254,7 +254,7 @@ let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./V
 
 [![sophon workflow](https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg)](https://github.com/rustq/3body-lang/actions/)
 
-⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/11092751114](https://github.com/rustq/3body-lang/actions/runs/11092751114/job/30818180950#step:5:2722)
+⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/11092893924](https://github.com/rustq/3body-lang/actions/runs/11092893924/job/30818494323?pr=47#step:5:2676)
 
 Model powered by [huantian2415/vicuna-13b-chinese-4bit-ggml](https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml)
 
