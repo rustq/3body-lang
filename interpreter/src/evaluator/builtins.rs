@@ -14,8 +14,10 @@ use llm::{load_progress_callback_stdout as load_callback, InferenceParameters, M
 use llm_base::InferenceRequest;
 #[cfg(feature="sophon")]
 use std::{convert::Infallible, io::Write, path::Path};
+use std::time::Duration;
 #[cfg(feature="sophon")]
 use spinoff;
+use crate::evaluator::object::Object::Native;
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -43,6 +45,11 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(
         String::from("智子工程"),
         Object::Builtin(1, three_body_sophon_engineering),
+    );
+    #[cfg(feature="threading")] // threading
+    builtins.insert(
+        String::from("饱和式救援"),
+        Object::Builtin(1, three_body_threading),
     );
     builtins
 }
@@ -174,7 +181,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
             };
 
             let model_type = model_type.as_str();
-            
+
 
             let model_path = {
                 match model_path {
@@ -208,7 +215,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                 .unwrap_or_else(|err| {
                     panic!("Failed to load {model_type} model from {model_path:?}: {err}")
                 });
-            
+
             let model = Box::leak(model);
 
             println!(
@@ -289,11 +296,11 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                                 |t| {
                                     print!("{t}");
                                     std::io::stdout().flush().unwrap();
-                    
+
                                     Ok(())
                                 },
                             );
-                    
+
                             match res {
                                 Err(err) => println!("\n{err}"),
                                 _ => ()
@@ -315,7 +322,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                                         NativeObject::LLMModel(model_ptr) => {
                                             model_ptr.clone()
                                         },
-                                        _ => panic!()
+                                        _ => panic!(),
                                     }
                                 },
                                 _ => panic!()
@@ -333,6 +340,75 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
             }
             Object::Hash(session_hash)
         }
+        _ => Object::Null,
+    }
+}
+
+use std::cell::RefCell;
+use std::rc::Rc;
+use crate::evaluator;
+use crate::parser;
+use crate::ast;
+use crate::ast::{BlockStmt, Stmt};
+use crate::lexer;
+
+fn eval(input: &str) -> Option<Object> {
+    evaluator::Evaluator {
+        env: Rc::new(RefCell::new(evaluator::env::Env::from(new_builtins()))),
+    }
+        .eval(&parser::Parser::new(lexer::Lexer::new(input)).parse())
+}
+
+#[cfg(feature="threading")]
+fn three_body_threading(args: Vec<Object>) -> Object {
+    match &args[0] {
+        Object::Int(o) => {
+            async fn local_task(id: i64) {
+                println!("Local task {} is running!", id);
+                tokio::time::sleep(Duration::from_secs(1)).await;
+                println!("Local task {} completed!", id);
+            }
+
+            let o = (*o).clone();
+
+            let mut handle = std::thread::spawn(move || {
+                let local_set = tokio::task::LocalSet::new();
+                let rt = tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                    .unwrap();
+
+                // 在 LocalSet 中安排任务
+                local_set.spawn_local(local_task(o));
+
+                // 运行 LocalSet 直到其中的任务完成
+                rt.block_on(local_set);
+            });
+            Object::Null
+        },
+        Object::String(input) => {
+            // async fn local_task(stmt: &BlockStmt) {
+            //     println!("Local task {} is running!", id);
+            //     tokio::time::sleep(Duration::from_secs(1)).await;
+            //     // println!("Local task {} completed!", id);
+            // }
+            let input = (*input).clone();
+
+            let mut handle = std::thread::spawn(move || {
+                let local_set = tokio::task::LocalSet::new();
+                let rt = tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                    .unwrap();
+
+                // 在 LocalSet 中安排任务
+                local_set.spawn_local(async move { eval(&input) });
+
+                // 运行 LocalSet 直到其中的任务完成
+                rt.block_on(local_set);
+            });
+            Object::Null
+        },
         _ => Object::Null,
     }
 }
@@ -577,5 +653,10 @@ mod tests {
             let got = three_body_deep_equal(input);
             assert_eq!(got, expected);
         }
+    }
+
+    #[test]
+    #[cfg(feature="threading")]
+    fn test_three_body_threading() {
     }
 }
