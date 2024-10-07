@@ -48,8 +48,8 @@ pub fn new_builtins() -> HashMap<String, Object> {
     );
     #[cfg(feature="threading")] // threading
     builtins.insert(
-        String::from("饱和式救援"),
-        Object::Builtin(1, three_body_threading),
+        String::from("程心"),
+        Object::Builtin(0, three_body_threading),
     );
     builtins
 }
@@ -361,56 +361,63 @@ fn eval(input: &str) -> Option<Object> {
 
 #[cfg(feature="threading")]
 fn three_body_threading(args: Vec<Object>) -> Object {
-    match &args[0] {
-        Object::Int(o) => {
-            async fn local_task(id: i64) {
-                println!("Local task {} is running!", id);
-                tokio::time::sleep(Duration::from_secs(1)).await;
-                println!("Local task {} completed!", id);
+    let mut session_hash = HashMap::new();
+    {
+        fn three_body_thread_new(args: Vec<Object>) -> Object {
+            match &args[0] {
+                Object::String(input) => {
+                    let input = (*input).clone();
+
+                    let mut handle = std::thread::spawn(move || {
+                        let local_set = tokio::task::LocalSet::new();
+                        let rt = tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()
+                            .unwrap();
+
+                        // 在 LocalSet 中安排任务
+                        local_set.spawn_local(async move { eval(&input) });
+
+                        // 运行 LocalSet 直到其中的任务完成
+                        rt.block_on(local_set);
+                    });
+
+                    let handle = Box::leak(Box::new(handle));
+                    let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
+                    Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
+                },
+                _ => panic!()
             }
-
-            let o = (*o).clone();
-
-            let mut handle = std::thread::spawn(move || {
-                let local_set = tokio::task::LocalSet::new();
-                let rt = tokio::runtime::Builder::new_current_thread()
-                    .enable_all()
-                    .build()
-                    .unwrap();
-
-                // 在 LocalSet 中安排任务
-                local_set.spawn_local(local_task(o));
-
-                // 运行 LocalSet 直到其中的任务完成
-                rt.block_on(local_set);
-            });
-            Object::Null
-        },
-        Object::String(input) => {
-            // async fn local_task(stmt: &BlockStmt) {
-            //     println!("Local task {} is running!", id);
-            //     tokio::time::sleep(Duration::from_secs(1)).await;
-            //     // println!("Local task {} completed!", id);
-            // }
-            let input = (*input).clone();
-
-            let mut handle = std::thread::spawn(move || {
-                let local_set = tokio::task::LocalSet::new();
-                let rt = tokio::runtime::Builder::new_current_thread()
-                    .enable_all()
-                    .build()
-                    .unwrap();
-
-                // 在 LocalSet 中安排任务
-                local_set.spawn_local(async move { eval(&input) });
-
-                // 运行 LocalSet 直到其中的任务完成
-                rt.block_on(local_set);
-            });
-            Object::Null
-        },
-        _ => Object::Null,
+        }
+        session_hash.insert(Object::String("thread".to_owned()), Object::Builtin(1, three_body_thread_new));
     }
+
+
+
+    {
+        fn three_body_thread_join(args: Vec<Object>) -> Object {
+            match &args[0] {
+                Object::Native(ptr) => {
+                    let handle_ptr = match **ptr {
+                        NativeObject::Thread(handle_ptr) => {
+                            handle_ptr.clone()
+                        }
+                        _ => panic!()
+                    };
+                    // let model = unsafe { & *model_ptr };
+                    unsafe { Box::from_raw(handle_ptr) }.join();
+                    // std::mem::drop(model);
+                    Object::Null
+                },
+                _ => panic!()
+            }
+        }
+        session_hash.insert(Object::String("join".to_owned()), Object::Builtin(1, three_body_thread_join));
+    }
+
+
+    Object::Hash(session_hash)
+
 }
 
 #[cfg(test)]
