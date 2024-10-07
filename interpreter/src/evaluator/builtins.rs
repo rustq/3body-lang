@@ -365,9 +365,9 @@ fn three_body_threading(args: Vec<Object>) -> Object {
     {
         fn three_body_thread_new(args: Vec<Object>) -> Object {
             match &args[0] {
-                Object::String(input) => {
-                    let input = (*input).clone();
+                Object::Function(params, ast, env ) => {
 
+                    let stmts = ast.clone();
                     let mut handle = std::thread::spawn(move || {
                         let local_set = tokio::task::LocalSet::new();
                         let rt = tokio::runtime::Builder::new_current_thread()
@@ -376,7 +376,12 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                             .unwrap();
 
                         // 在 LocalSet 中安排任务
-                        local_set.spawn_local(async move { eval(&input) });
+                        local_set.spawn_local(async move {
+                            let mut ev = evaluator::Evaluator {
+                                env: Rc::new(RefCell::new(evaluator::env::Env::from(new_builtins()))),
+                            };
+                            ev.eval(&stmts);
+                        });
 
                         // 运行 LocalSet 直到其中的任务完成
                         rt.block_on(local_set);
@@ -385,7 +390,7 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                     let handle = Box::leak(Box::new(handle));
                     let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
                     Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
-                },
+                }
                 _ => panic!()
             }
         }
