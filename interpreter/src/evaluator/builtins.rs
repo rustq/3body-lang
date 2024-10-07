@@ -1,9 +1,14 @@
 use std::collections::HashMap;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 extern crate rand;
 
 use crate::evaluator::object::Object;
 use crate::evaluator::object::NativeObject;
+use crate::evaluator::env::Env;
+use crate::evaluator::Evaluator;
 
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
@@ -344,20 +349,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
     }
 }
 
-use std::cell::RefCell;
-use std::rc::Rc;
-use crate::evaluator;
-use crate::parser;
-use crate::ast;
-use crate::ast::{BlockStmt, Stmt};
-use crate::lexer;
 
-fn eval(input: &str) -> Option<Object> {
-    evaluator::Evaluator {
-        env: Rc::new(RefCell::new(evaluator::env::Env::from(new_builtins()))),
-    }
-        .eval(&parser::Parser::new(lexer::Lexer::new(input)).parse())
-}
 
 #[cfg(feature="threading")]
 fn three_body_threading(args: Vec<Object>) -> Object {
@@ -377,8 +369,8 @@ fn three_body_threading(args: Vec<Object>) -> Object {
 
                         // 在 LocalSet 中安排任务
                         local_set.spawn_local(async move {
-                            let mut ev = evaluator::Evaluator {
-                                env: Rc::new(RefCell::new(evaluator::env::Env::from(new_builtins()))),
+                            let mut ev = Evaluator {
+                                env: Rc::new(RefCell::new(Env::from(new_builtins()))),
                             };
                             ev.eval(&stmts);
                         });
@@ -409,9 +401,7 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                         }
                         _ => panic!()
                     };
-                    // let model = unsafe { & *model_ptr };
                     unsafe { Box::from_raw(handle_ptr) }.join();
-                    // std::mem::drop(model);
                     Object::Null
                 },
                 _ => panic!()
