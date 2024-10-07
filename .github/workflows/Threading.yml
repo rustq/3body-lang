@@ -1,0 +1,30 @@
+name: threading
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  reasoning:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        components: clippy
+        override: true
+
+    - name: Repl
+      run: |
+        cargo build --features="repl" --release
+
+    - name: Threading
+      run: |
+        ./target/release/3body -V
+        ./target/release/3body -c '给 cx 以 程心(); 给 研制曲率飞船 以 法则() { 给 掩体纪年 以 5; 面壁 (掩体纪年 <= 11) { 冬眠(1000); 广播(["研制曲率飞船", 掩体纪年]); 掩体纪年 = 掩体纪年 + 1; } } 给 星环公司 以 [cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船)]; 冬眠(12000)'

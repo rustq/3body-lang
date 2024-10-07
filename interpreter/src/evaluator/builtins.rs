@@ -19,10 +19,8 @@ use llm::{load_progress_callback_stdout as load_callback, InferenceParameters, M
 use llm_base::InferenceRequest;
 #[cfg(feature="sophon")]
 use std::{convert::Infallible, io::Write, path::Path};
-use std::time::Duration;
 #[cfg(feature="sophon")]
 use spinoff;
-use crate::evaluator::object::Object::Native;
 
 pub fn new_builtins() -> HashMap<String, Object> {
     let mut builtins = HashMap::new();
@@ -367,7 +365,6 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                             .build()
                             .unwrap();
 
-                        // 在 LocalSet 中安排任务
                         local_set.spawn_local(async move {
                             let mut ev = Evaluator {
                                 env: Rc::new(RefCell::new(Env::from(new_builtins()))),
@@ -375,7 +372,6 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                             ev.eval(&stmts);
                         });
 
-                        // 运行 LocalSet 直到其中的任务完成
                         rt.block_on(local_set);
                     });
 
@@ -657,8 +653,5 @@ mod tests {
         }
     }
 
-    #[test]
-    #[cfg(feature="threading")]
-    fn test_three_body_threading() {
-    }
+
 }
