@@ -6,16 +6,16 @@ pub mod env;
 pub mod object;
 use crate::ast;
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Evaluator {
-    pub env: Rc<RefCell<env::Env>>,
+    pub env: std::sync::Arc<tokio::sync::Mutex<env::Env>>,
 }
 
 ///
 // Evaluator Basic Implement
 ///
 impl Evaluator {
-    pub fn new(env: Rc<RefCell<env::Env>>) -> Self {
+    pub fn new(env: std::sync::Arc<tokio::sync::Mutex<env::Env>>) -> Self {
         Evaluator { env }
     }
 
@@ -46,7 +46,7 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let ast::Ident(name) = ident;
-                    let mut env_borrow_mut = self.env.borrow_mut();
+                    let mut env_borrow_mut = self.env.lock();
                     match env_borrow_mut.check_inner(name.clone()) {
                         env::CheckInnerInfo::ConstantExist => Some(object::Object::Error(format!(
                             "{} {}!",
@@ -72,7 +72,7 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let ast::Ident(name) = ident;
-                    let mut env_borrow_mut = self.env.borrow_mut();
+                    let mut env_borrow_mut = self.env.lock();
                     match env_borrow_mut.check_inner(name.clone()) {
                         env::CheckInnerInfo::ConstantExist => Some(object::Object::Error(format!(
                             "{} {}!",
@@ -109,7 +109,7 @@ impl Evaluator {
                     Some(value)
                 } else {
                     let ast::Ident(name) = ident;
-                    match self.env.borrow_mut().update(name.clone(), value) {
+                    match self.env.lock().update(name.clone(), value) {
                         env::UpdateInfo::ConstantForbidden => Some(object::Object::Error(format!(
                             "{} {}!",
                             "Can not assign to constant variable", name
@@ -298,7 +298,7 @@ impl Evaluator {
             ast::Expr::Function { params, body } => Some(object::Object::Function(
                 params.clone(),
                 body.clone(),
-                Rc::clone(&self.env),
+                std::sync::Arc::clone(&self.env),
             )),
             ast::Expr::Call { func, args } => Some(self.eval_call_expr(func, args)),
             _ => None,
@@ -426,15 +426,15 @@ impl Evaluator {
             ));
         }
 
-        let current_env = Rc::clone(&self.env);
-        let mut scoped_env = env::Env::new_with_outer(Rc::clone(&env));
+        let current_env = std::sync::Arc::clone(&self.env);
+        let mut scoped_env = env::Env::new_with_outer(std::sync::Arc::clone(&env));
         let list = params.iter().zip(args.iter());
         for (_, (ident, o)) in list.enumerate() {
             let ast::Ident(name) = ident.clone();
             scoped_env.set(name, o.clone());
         }
 
-        self.env = Rc::new(RefCell::new(scoped_env));
+        self.env = std::sync::Arc::new(tokio::sync::Mutex::new(scoped_env));
 
         let object = self.eval_block_stmt(&body);
 
@@ -455,7 +455,7 @@ impl Evaluator {
     fn eval_ident(&mut self, ident: &ast::Ident) -> object::Object {
         let ast::Ident(name) = ident;
 
-        match self.env.borrow_mut().get(name.clone()) {
+        match self.env.lock().get(name.clone()) {
             Some(value) => value,
             None => object::Object::Error(format!("identifier not found: {}", name)),
         }
@@ -557,7 +557,7 @@ mod tests {
 
     fn eval(input: &str) -> Option<object::Object> {
         Evaluator {
-            env: Rc::new(RefCell::new(env::Env::from(new_builtins()))),
+            env: std::sync::Arc::new(tokio::sync::Mutex::new(env::Env::from(new_builtins()))),
         }
         .eval(&Parser::new(Lexer::new(input)).parse())
     }
@@ -902,7 +902,7 @@ identity(100);
                     Box::new(ast::Expr::Ident(ast::Ident(String::from("x")))),
                     Box::new(ast::Expr::Literal(ast::Literal::Int(2))),
                 ))],
-                Rc::new(RefCell::new(env::Env::from(new_builtins()))),
+                std::sync::Arc::new(tokio::sync::Mutex::new(env::Env::from(new_builtins()))),
             )),
             eval(input),
         );

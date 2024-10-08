@@ -8,14 +8,20 @@ struct VariableStatus {
     constant: bool,
 }
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Env {
     pub identifiers: HashMap<String, Object>,
     variables_status: HashMap<String, VariableStatus>,
-    outer: Option<Rc<RefCell<Env>>>,
+    outer: Option<std::sync::Arc<tokio::sync::Mutex<Env>>>,
 }
 
-#[derive(PartialEq, Clone, Debug)]
+impl PartialEq for Env {
+    fn eq(&self, _: &Env) -> bool {
+        false
+    }
+}
+
+#[derive(PartialEq, Clone, Debug, Future)]
 pub enum UpdateInfo {
     ConstantForbidden,
     NoIdentifier,
@@ -46,7 +52,7 @@ impl Env {
         }
     }
 
-    pub fn new_with_outer(outer: Rc<RefCell<Env>>) -> Self {
+    pub fn new_with_outer(outer: std::sync::Arc<tokio::sync::Mutex<Env>>) -> Self {
         Env {
             identifiers: HashMap::new(),
             variables_status: HashMap::new(),
@@ -72,7 +78,7 @@ impl Env {
         self.identifiers.insert(name, value.clone());
     }
 
-    pub fn update(&mut self, name: String, value: Object) -> UpdateInfo {
+    pub async fn update(&mut self, name: String, value: Object) -> UpdateInfo {
         match self.identifiers.contains_key(&name) {
             true => {
                 if self.is_constant(name.clone()) {
@@ -83,18 +89,22 @@ impl Env {
             },
             false => {
                 match self.outer {
-                    Some(ref outer) => outer.borrow_mut().update(name, value),
+                    Some(ref outer) => {
+                        let mut o = outer.lock().await;
+                        o.update(name, value);
+                        UpdateInfo::Succeed
+                    },
                     None => UpdateInfo::NoIdentifier,
                 }
             }
         }
     }
 
-    pub fn get(&mut self, name: String) -> Option<Object> {
+    pub async fn get(&mut self, name: String) -> Option<Object> {
         match self.identifiers.get(&name) {
             Some(value) => Some(value.clone()),
             None => match self.outer {
-                Some(ref outer) => outer.borrow_mut().get(name),
+                Some(ref outer) => outer.lock().await.get(name),
                 None => None,
             },
         }
@@ -148,7 +158,7 @@ mod tests {
 
     #[test]
     fn test_env_new_with_outer() {
-        let outer = Rc::new(RefCell::new(Env::new()));
+        let outer = std::sync::Arc::new(tokio::sync::Mutex::new(Env::new()));
         let env = Env::new_with_outer(outer.clone());
         assert_eq!(env.identifiers.len(), 0);
         assert_eq!(env.outer, Some(outer));
@@ -193,8 +203,8 @@ mod tests {
 
     #[test]
     fn test_update_out_identifier() {
-        let global = Rc::new(RefCell::new(Env::new()));
-        let outer = Rc::new(RefCell::new(Env::new_with_outer(global.clone())));
+        let global = std::sync::Arc::new(tokio::sync::Mutex::new(Env::new()));
+        let outer = std::sync::Arc::new(tokio::sync::Mutex::new(Env::new_with_outer(global.clone())));
         let mut env = Env::new_with_outer(outer.clone());
         outer.as_ref().borrow_mut().set("key".to_string(), Object::Int(2));
         assert_eq!(outer.as_ref().borrow_mut().update("key".to_string(), Object::Int(2)), UpdateInfo::Succeed);

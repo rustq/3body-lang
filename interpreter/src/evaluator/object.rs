@@ -20,14 +20,14 @@ pub enum NativeObject {
     Thread(*mut std::thread::JoinHandle<()>),
 }
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub enum Object {
     Int(i64),
     String(String),
     Bool(bool),
     Array(Vec<Object>),
     Hash(HashMap<Object, Object>),
-    Function(Vec<ast::Ident>, ast::BlockStmt, Rc<RefCell<env::Env>>),
+    Function(Vec<ast::Ident>, ast::BlockStmt, std::sync::Arc<tokio::sync::Mutex<env::Env>>),
     Builtin(i32, BuiltinFunc),
     ReturnValue(Box<Object>),
     BreakStatement,
@@ -36,6 +36,7 @@ pub enum Object {
     Null,
     Native(Box<NativeObject>),
 }
+
 
 /// This is actually repr
 impl fmt::Display for Object {
@@ -88,7 +89,14 @@ impl fmt::Display for Object {
     }
 }
 
-impl Eq for Object {}
+impl PartialEq for Object {
+    fn eq(&self, other: &Self) -> bool {
+        false
+    }
+}
+impl Eq for Object {
+
+}
 
 impl Hash for Object {
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -145,7 +153,7 @@ mod tests {
         let obj = Object::Function(
             vec![Ident("x".to_string()), Ident("y".to_string())],
             vec![],
-            Rc::new(RefCell::new(Env::new())),
+            std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
         );
         assert_eq!(format!("{}", obj), "fn(x, y) { ... }");
     }

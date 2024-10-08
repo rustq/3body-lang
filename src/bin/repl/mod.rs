@@ -20,7 +20,7 @@ fn main() {
     rl.set_helper(Some(helper::Helper::new()));
 
     let mut evaluator = Evaluator {
-        env: Rc::new(RefCell::new(env::Env::from(new_builtins()))),
+        env: std::sync::Arc::new(tokio::sync::Mutex::new(env::Env::from(new_builtins()))),
     };
 
     let args: Vec<String> = std::env::args().collect();

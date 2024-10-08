@@ -358,26 +358,31 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                 Object::Function(params, ast, env ) => {
 
                     let stmts = ast.clone();
-                    let mut handle = std::thread::spawn(move || {
-                        let local_set = tokio::task::LocalSet::new();
-                        let rt = tokio::runtime::Builder::new_current_thread()
-                            .enable_all()
-                            .build()
-                            .unwrap();
+                    let env_clone = std::sync::Arc::clone(&env);
 
-                        local_set.spawn_local(async move {
-                            let mut ev = Evaluator {
-                                env: Rc::new(RefCell::new(Env::from(new_builtins()))),
-                            };
-                            ev.eval(&stmts);
-                        });
+                    // let runtime =
 
-                        rt.block_on(local_set);
-                    });
-
-                    let handle = Box::leak(Box::new(handle));
-                    let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
-                    Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
+                    // let mut handle = std::thread::spawn(move || {
+                    //     let local_set = tokio::task::LocalSet::new();
+                    //     let rt = tokio::runtime::Builder::new_current_thread()
+                    //         .enable_all()
+                    //         .build()
+                    //         .unwrap();
+                    //
+                    //     local_set.spawn_local(async move {
+                    //         let mut ev = Evaluator {
+                    //             env: std::sync::Arc::new(tokio::sync::Mutex::new(Env::from(new_builtins()))),
+                    //         };
+                    //         ev.eval(&stmts);
+                    //     });
+                    //
+                    //     rt.block_on(local_set);
+                    // });
+                    //
+                    // let handle = Box::leak(Box::new(handle));
+                    // let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
+                    // Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
+                    Object::Null
                 }
                 _ => panic!()
             }
@@ -605,12 +610,12 @@ mod tests {
                     Object::Function(
                         vec![ast::Ident(String::from("x"))],
                         vec![],
-                        Rc::new(RefCell::new(Env::new())),
+                        std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
                     ),
                     Object::Function(
                         vec![ast::Ident(String::from("x"))],
                         vec![],
-                        Rc::new(RefCell::new(Env::new())),
+                        std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
                     ),
                 ],
                 Object::Bool(true),
@@ -620,12 +625,12 @@ mod tests {
                     Object::Function(
                         vec![ast::Ident(String::from("x"))],
                         vec![],
-                        Rc::new(RefCell::new(Env::new())),
+                        std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
                     ),
                     Object::Function(
                         vec![ast::Ident(String::from("y"))],
                         vec![],
-                        Rc::new(RefCell::new(Env::new())),
+                        std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
                     ),
                 ],
                 Object::Bool(false),
@@ -636,7 +641,7 @@ mod tests {
                     Object::Function(
                         vec![ast::Ident(String::from("x"))],
                         vec![],
-                        Rc::new(RefCell::new(Env::new())),
+                        std::sync::Arc::new(tokio::sync::Mutex::new(Env::new())),
                     ),
                 ],
                 Object::Bool(false),
