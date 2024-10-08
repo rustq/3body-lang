@@ -1,9 +1,15 @@
 use std::collections::HashMap;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 extern crate rand;
 
 use crate::evaluator::object::Object;
 use crate::evaluator::object::NativeObject;
+use crate::evaluator::env::Env;
+use crate::evaluator::Evaluator;
+use crate::ast;
 
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
@@ -43,6 +49,11 @@ pub fn new_builtins() -> HashMap<String, Object> {
     builtins.insert(
         String::from("智子工程"),
         Object::Builtin(1, three_body_sophon_engineering),
+    );
+    #[cfg(feature="threading")] // threading
+    builtins.insert(
+        String::from("程心"),
+        Object::Builtin(0, three_body_threading),
     );
     builtins
 }
@@ -174,7 +185,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
             };
 
             let model_type = model_type.as_str();
-            
+
 
             let model_path = {
                 match model_path {
@@ -208,7 +219,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                 .unwrap_or_else(|err| {
                     panic!("Failed to load {model_type} model from {model_path:?}: {err}")
                 });
-            
+
             let model = Box::leak(model);
 
             println!(
@@ -289,11 +300,11 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                                 |t| {
                                     print!("{t}");
                                     std::io::stdout().flush().unwrap();
-                    
+
                                     Ok(())
                                 },
                             );
-                    
+
                             match res {
                                 Err(err) => println!("\n{err}"),
                                 _ => ()
@@ -315,7 +326,7 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
                                         NativeObject::LLMModel(model_ptr) => {
                                             model_ptr.clone()
                                         },
-                                        _ => panic!()
+                                        _ => panic!(),
                                     }
                                 },
                                 _ => panic!()
@@ -335,6 +346,99 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
         }
         _ => Object::Null,
     }
+}
+
+
+
+#[cfg(feature="threading")]
+fn three_body_threading(args: Vec<Object>) -> Object {
+    let mut session_hash = HashMap::new();
+    {
+        fn three_body_thread_new(args: Vec<Object>) -> Object {
+            match &args[0] {
+                Object::Function(params, ast, env ) => {
+
+                    let stmts = ast.clone();
+                    let params = params.clone();
+
+                    let literals: Vec<crate::ast::Literal> = match &args[1] {
+                        Object::Array(arr) => {
+                            arr.iter().map(|o| match o {
+                                Object::Int(i) => ast::Literal::Int(i.clone()),
+                                Object::String(str) => ast::Literal::String(str.clone()),
+                                Object::Bool(bool) => ast::Literal::Bool(bool.clone()),
+                                _ => todo!(),
+                            }).collect()
+                        },
+                        _ => panic!()
+                    };
+
+                    let mut handle = std::thread::spawn(move || {
+                        let local_set = tokio::task::LocalSet::new();
+                        let rt = tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()
+                            .unwrap();
+
+                        local_set.spawn_local(async move {
+                            let mut ev = Evaluator {
+                                env: {
+                                    let scoped_env = Rc::new(RefCell::new(Env::from(new_builtins())));
+
+                                    for (i, ident) in params.iter().enumerate() {
+                                        let crate::ast::Ident(name) = ident.clone();
+                                        let o = match &literals[i] {
+                                            ast::Literal::Int(i) => Object::Int(i.clone()),
+                                            ast::Literal::String(str) => Object::String(str.clone()),
+                                            ast::Literal::Bool(bo) => Object::Bool(bo.clone()),
+                                            _ => todo!(),
+                                        };
+                                        scoped_env.borrow_mut().set(name, o.clone());
+                                    }
+
+                                    scoped_env
+                                },
+                            };
+                            ev.eval(&stmts);
+                        });
+
+                        rt.block_on(local_set);
+                    });
+
+                    let handle = Box::leak(Box::new(handle));
+                    let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
+                    Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
+                }
+                _ => panic!()
+            }
+        }
+        session_hash.insert(Object::String("thread".to_owned()), Object::Builtin(2, three_body_thread_new));
+    }
+
+
+
+    {
+        fn three_body_thread_join(args: Vec<Object>) -> Object {
+            match &args[0] {
+                Object::Native(ptr) => {
+                    let handle_ptr = match **ptr {
+                        NativeObject::Thread(handle_ptr) => {
+                            handle_ptr.clone()
+                        }
+                        _ => panic!()
+                    };
+                    unsafe { Box::from_raw(handle_ptr) }.join();
+                    Object::Null
+                },
+                _ => panic!()
+            }
+        }
+        session_hash.insert(Object::String("join".to_owned()), Object::Builtin(1, three_body_thread_join));
+    }
+
+
+    Object::Hash(session_hash)
+
 }
 
 #[cfg(test)]
@@ -578,4 +682,6 @@ mod tests {
             assert_eq!(got, expected);
         }
     }
+
+
 }
