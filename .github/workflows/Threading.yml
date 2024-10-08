@@ -27,4 +27,4 @@ jobs:
     - name: Threading
       run: |
         ./target/release/3body -V
-        ./target/release/3body -c '给 cx 以 程心(); 给 研制曲率飞船 以 法则() { 给 掩体纪年 以 5; 面壁 (掩体纪年 <= 11) { 冬眠(1000); 广播(["研制曲率飞船", 掩体纪年]); 掩体纪年 = 掩体纪年 + 1; } } 给 星环公司 以 [cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船), cx.thread(研制曲率飞船)]; 冬眠(12000)'
+        ./target/release/3body -c '给 cx 以 程心(); 给 星环公司 以 法则(name, y, limit) { 给 掩体纪年 以 y; 面壁 (掩体纪年 <= limit) { 冬眠(1000); 广播([name, 掩体纪年]); 掩体纪年 = 掩体纪年 + 1; } } cx.thread(星环公司, ["掩体工程", 0, 11]) 冬眠(5000) cx.thread(星环公司, ["研制曲率飞船", 5, 11]) 冬眠(6000)'

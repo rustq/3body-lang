@@ -9,6 +9,7 @@ use crate::evaluator::object::Object;
 use crate::evaluator::object::NativeObject;
 use crate::evaluator::env::Env;
 use crate::evaluator::Evaluator;
+use crate::ast;
 
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
@@ -358,6 +359,20 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                 Object::Function(params, ast, env ) => {
 
                     let stmts = ast.clone();
+                    let params = params.clone();
+
+                    let literals: Vec<crate::ast::Literal> = match &args[1] {
+                        Object::Array(arr) => {
+                            arr.iter().map(|o| match o {
+                                Object::Int(i) => ast::Literal::Int(i.clone()),
+                                Object::String(str) => ast::Literal::String(str.clone()),
+                                Object::Bool(bool) => ast::Literal::Bool(bool.clone()),
+                                _ => todo!(),
+                            }).collect()
+                        },
+                        _ => panic!()
+                    };
+
                     let mut handle = std::thread::spawn(move || {
                         let local_set = tokio::task::LocalSet::new();
                         let rt = tokio::runtime::Builder::new_current_thread()
@@ -367,7 +382,22 @@ fn three_body_threading(args: Vec<Object>) -> Object {
 
                         local_set.spawn_local(async move {
                             let mut ev = Evaluator {
-                                env: Rc::new(RefCell::new(Env::from(new_builtins()))),
+                                env: {
+                                    let scoped_env = Rc::new(RefCell::new(Env::from(new_builtins())));
+
+                                    for (i, ident) in params.iter().enumerate() {
+                                        let crate::ast::Ident(name) = ident.clone();
+                                        let o = match &literals[i] {
+                                            ast::Literal::Int(i) => Object::Int(i.clone()),
+                                            ast::Literal::String(str) => Object::String(str.clone()),
+                                            ast::Literal::Bool(bo) => Object::Bool(bo.clone()),
+                                            _ => todo!(),
+                                        };
+                                        scoped_env.borrow_mut().set(name, o.clone());
+                                    }
+
+                                    scoped_env
+                                },
                             };
                             ev.eval(&stmts);
                         });
@@ -382,7 +412,7 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                 _ => panic!()
             }
         }
-        session_hash.insert(Object::String("thread".to_owned()), Object::Builtin(1, three_body_thread_new));
+        session_hash.insert(Object::String("thread".to_owned()), Object::Builtin(2, three_body_thread_new));
     }
 
 
