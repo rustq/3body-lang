@@ -194,6 +194,7 @@ $ 3body
 // > true
 ```
 
+
 ## Summary
 
 |Token|3body-lang|Explanation|
@@ -214,6 +215,32 @@ $ 3body
 |clear|二向箔清理|"two-way foil cleaning"|
 |exit|毁灭|"destroy"|
 |deep-equal|没关系的都一样|"It's okay. It's all the same."|
+
+## 🧶 Threading
+
+三体编程语言可以通过 "程心" 创建并管理线程。
+
+Able to use threading to create and handle threads.
+
+#### Threads Create
+
+```rust
+给 cx 以 程心();
+
+cx.thread(星环公司, ["掩体工程", 0, 11])
+cx.thread(星环公司, ["研制曲率飞船", 5, 11])
+```
+
+#### Threads Await
+
+```rust
+给 cx 以 程心();
+
+给 秘密研究 以 cx.thread(星环公司, ["重启光速飞船的研究", 11, 66]);
+cx.join(秘密研究)
+```
+
+⚛️ Example threading of "星环公司" in [runs/11302243115](https://github.com/rustq/3body-lang/actions/runs/11302243115/job/31437809217)
 
 ## 🤗 LLM
 

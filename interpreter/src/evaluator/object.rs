@@ -16,6 +16,8 @@ pub type BuiltinFunc = fn(Vec<Object>) -> Object;
 pub enum NativeObject {
     #[cfg(feature="sophon")]
     LLMModel(*mut dyn llm::Model),
+    #[cfg(feature="threading")]
+    Thread(*mut std::thread::JoinHandle<()>),
 }
 
 #[derive(PartialEq, Clone, Debug)]
