@@ -17,7 +17,9 @@ rand = { version = "0.8.5" }
 llm = { version = "0.1.1", optional = true }
 llm-base = { version = "0.1.1", optional = true }
 spinoff = { version = "0.7.0", default-features = false, features = ["dots", "arc", "line"], optional = true }
+tokio = { version = "1.40.0", features = ["sync", "time", "macros", "rt-multi-thread"], optional = true }
 
 [features]
 default = []
 sophon = ["llm", "llm-base", "spinoff"]
+threading = ["tokio"]
