@@ -351,29 +351,13 @@ fn three_body_sophon_engineering(args: Vec<Object>) -> Object {
 
 
 #[cfg(feature="threading")]
-fn three_body_threading(args: Vec<Object>) -> Object {
+fn three_body_threading(_: Vec<Object>) -> Object {
     let mut session_hash = HashMap::new();
     {
         fn three_body_thread_new(args: Vec<Object>) -> Object {
             match &args[0] {
-                Object::Function(params, ast, env ) => {
-
-                    let stmts = ast.clone();
-                    let params = params.clone();
-
-                    let literals: Vec<crate::ast::Literal> = match &args[1] {
-                        Object::Array(arr) => {
-                            arr.iter().map(|o| match o {
-                                Object::Int(i) => ast::Literal::Int(i.clone()),
-                                Object::String(str) => ast::Literal::String(str.clone()),
-                                Object::Bool(bool) => ast::Literal::Bool(bool.clone()),
-                                _ => todo!(),
-                            }).collect()
-                        },
-                        _ => panic!()
-                    };
-
-                    let mut handle = std::thread::spawn(move || {
+                Object::Function(_, _, _) => {
+                    let handle = std::thread::spawn(|| {
                         let local_set = tokio::task::LocalSet::new();
                         let rt = tokio::runtime::Builder::new_current_thread()
                             .enable_all()
@@ -381,25 +365,29 @@ fn three_body_threading(args: Vec<Object>) -> Object {
                             .unwrap();
 
                         local_set.spawn_local(async move {
-                            let mut ev = Evaluator {
-                                env: {
-                                    let scoped_env = Rc::new(RefCell::new(Env::from(new_builtins())));
-
-                                    for (i, ident) in params.iter().enumerate() {
-                                        let crate::ast::Ident(name) = ident.clone();
-                                        let o = match &literals[i] {
-                                            ast::Literal::Int(i) => Object::Int(i.clone()),
-                                            ast::Literal::String(str) => Object::String(str.clone()),
-                                            ast::Literal::Bool(bo) => Object::Bool(bo.clone()),
-                                            _ => todo!(),
-                                        };
-                                        scoped_env.borrow_mut().set(name, o.clone());
-                                    }
-
-                                    scoped_env
+                            match &args[0] {
+                                Object::Function(params, stmts, env ) => {
+                                    let mut ev = Evaluator {
+                                        env: {
+                                            let scoped_env = env.clone();
+                                             let list = params.iter().zip({
+                                                match &args[1] {
+                                                    Object::Array(arr) => arr,
+                                                    _ => panic!()
+                                                }
+                                            }.iter());
+                                            let mut scoped_env_mut = scoped_env.borrow_mut();
+                                            for (_, (ident, o)) in list.enumerate() {
+                                                let ast::Ident(name) = ident.clone();
+                                                scoped_env_mut.set(name, o.clone());
+                                            }
+                                            scoped_env.clone()
+                                        },
+                                    };
+                                    ev.eval(&stmts);
                                 },
-                            };
-                            ev.eval(&stmts);
+                                _ => panic!()
+                            }
                         });
 
                         rt.block_on(local_set);

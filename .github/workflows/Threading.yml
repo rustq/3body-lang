@@ -29,3 +29,11 @@ jobs:
         ./target/release/3body -V
         ./target/release/3body -c '给 cx 以 程心(); 给 星环公司 以 法则(name, y, limit) { 给 掩体纪年 以 y; 面壁 (掩体纪年 <= limit) { 冬眠(1000); 广播([name, 掩体纪年]); 掩体纪年 = 掩体纪年 + 1; } } cx.thread(星环公司, ["掩体工程", 0, 11]) 冬眠(5000) cx.thread(星环公司, ["研制曲率飞船", 5, 11]) 冬眠(6000)'
         ./target/release/3body -c '给 cx 以 程心(); 给 星环公司 以 法则(name, y, limit) { 给 掩体纪年 以 y; 面壁 (掩体纪年 <= limit) { 冬眠(1000); 广播([name, 掩体纪年]); 掩体纪年 = 掩体纪年 + 1; } } 给 秘密研究 以 cx.thread(星环公司, ["重启光速飞船的研究", 11, 66]) cx.join(秘密研究)'
+
+    - name: Threading Safe
+      run: |
+        ./target/release/3body -c '给 cx 以 程心(); 给 执剑人 以 "程心女士"; 给 星环公司 以 法则(name, y, limit) { 给 掩体纪年 以 y; 面壁 (掩体纪年 <= limit) { 冬眠(1000); 广播([name, 掩体纪年, 执剑人]); 掩体纪年 = 掩体纪年 + 1; } } cx.thread(星环公司, ["掩体工程", 0, 11]) 冬眠(5000) cx.thread(星环公司, ["研制曲率飞船", 5, 11]) 冬眠(6000)'
+
+    - name: Threading Unsafe
+      run: |
+        ./target/release/3body -c '给 cx 以 程心(); 给 掩体纪年 以 0; 给 星环公司 以 法则(name, limit) { 面壁 (掩体纪年 <= limit) { 冬眠(1000); 广播([name, 掩体纪年]); }} cx.thread(星环公司, ["掩体工程", 11]); 面壁 (掩体纪年 < 5) { 冬眠(1000); 掩体纪年 = 掩体纪年 + 1; 广播(掩体纪年); } cx.thread(星环公司, ["研制曲率飞船", 11]); 面壁 (掩体纪年 <= 11) { 冬眠(1000); 掩体纪年 = 掩体纪年 + 1; 广播(掩体纪年); }'
