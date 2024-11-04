@@ -369,19 +369,18 @@ fn three_body_threading(_: Vec<Object>) -> Object {
                                 Object::Function(params, stmts, env ) => {
                                     let mut ev = Evaluator {
                                         env: {
-                                            let scoped_env = env.clone();
+                                            let mut scoped_env = Env::new_with_outer(Rc::clone(&env));
                                              let list = params.iter().zip({
                                                 match &args[1] {
                                                     Object::Array(arr) => arr,
                                                     _ => panic!()
                                                 }
                                             }.iter());
-                                            let mut scoped_env_mut = scoped_env.borrow_mut();
                                             for (_, (ident, o)) in list.enumerate() {
                                                 let ast::Ident(name) = ident.clone();
-                                                scoped_env_mut.set(name, o.clone());
+                                                scoped_env.set(name, o.clone());
                                             }
-                                            scoped_env.clone()
+                                            Rc::new(RefCell::new(scoped_env))
                                         },
                                     };
                                     ev.eval(&stmts);
