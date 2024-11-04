@@ -369,7 +369,7 @@ fn three_body_threading(_: Vec<Object>) -> Object {
                                 Object::Function(params, stmts, env ) => {
                                     let mut ev = Evaluator {
                                         env: {
-                                            let mut scoped_env = Env::new_with_outer(Rc::clone(&env));
+                                            let mut scoped_env = Env::new_with_outer(Rc::clone(&env)); // still thread unsafe
                                              let list = params.iter().zip({
                                                 match &args[1] {
                                                     Object::Array(arr) => arr,

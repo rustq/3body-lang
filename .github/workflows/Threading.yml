@@ -24,7 +24,7 @@ jobs:
       run: |
         cargo build --features="repl" --release
 
-    - name: Thread Safe
+    - name: Thread Safe (still unsafe)
       run: |
         ./target/release/3body -c '
           给 cx 以 程心();
