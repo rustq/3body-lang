@@ -355,49 +355,44 @@ fn three_body_threading(_: Vec<Object>) -> Object {
     let mut session_hash = HashMap::new();
     {
         fn three_body_thread_new(args: Vec<Object>) -> Object {
-            match &args[0] {
-                Object::Function(_, _, _) => {
-                    let handle = std::thread::spawn(|| {
-                        let local_set = tokio::task::LocalSet::new();
-                        let rt = tokio::runtime::Builder::new_current_thread()
-                            .enable_all()
-                            .build()
-                            .unwrap();
+            let handle = std::thread::spawn(|| {
+                let local_set = tokio::task::LocalSet::new();
+                let rt = tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                    .unwrap();
 
-                        local_set.spawn_local(async move {
-                            match &args[0] {
-                                Object::Function(params, stmts, env ) => {
-                                    let mut ev = Evaluator {
-                                        env: {
-                                            let mut scoped_env = Env::new_with_outer(Rc::clone(&env)); // still thread unsafe
-                                             let list = params.iter().zip({
-                                                match &args[1] {
-                                                    Object::Array(arr) => arr,
-                                                    _ => panic!()
-                                                }
-                                            }.iter());
-                                            for (_, (ident, o)) in list.enumerate() {
-                                                let ast::Ident(name) = ident.clone();
-                                                scoped_env.set(name, o.clone());
-                                            }
-                                            Rc::new(RefCell::new(scoped_env))
-                                        },
-                                    };
-                                    ev.eval(&stmts);
+                local_set.spawn_local(async move {
+                    match &args[0] {
+                        Object::Function(params, stmts, env ) => {
+                            let mut ev = Evaluator {
+                                env: {
+                                    let mut scoped_env = Env::new_with_outer(Rc::clone(&env)); // still thread unsafe
+                                        let list = params.iter().zip({
+                                        match &args[1] {
+                                            Object::Array(arr) => arr,
+                                            _ => panic!()
+                                        }
+                                    }.iter());
+                                    for (_, (ident, o)) in list.enumerate() {
+                                        let ast::Ident(name) = ident.clone();
+                                        scoped_env.set(name, o.clone());
+                                    }
+                                    Rc::new(RefCell::new(scoped_env))
                                 },
-                                _ => panic!()
-                            }
-                        });
+                            };
+                            ev.eval(&stmts);
+                        },
+                        _ => panic!()
+                    }
+                });
 
-                        rt.block_on(local_set);
-                    });
+                rt.block_on(local_set);
+            });
 
-                    let handle = Box::leak(Box::new(handle));
-                    let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
-                    Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
-                }
-                _ => panic!()
-            }
+            let handle = Box::leak(Box::new(handle));
+            let handle_ptr = &mut *handle as *mut std::thread::JoinHandle<()>;
+            Object::Native(Box::new(NativeObject::Thread(handle_ptr)))
         }
         session_hash.insert(Object::String("thread".to_owned()), Object::Builtin(2, three_body_thread_new));
     }
