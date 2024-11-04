@@ -37,6 +37,8 @@ pub enum Object {
     Native(Box<NativeObject>),
 }
 
+unsafe impl Send for Object {}
+
 /// This is actually repr
 impl fmt::Display for Object {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
