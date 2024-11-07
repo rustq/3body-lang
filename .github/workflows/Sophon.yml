@@ -1,31 +1,31 @@
-name: sophon reasoning
-
-on:
-  push:
-    branches:
-#      - '*'
-  pull_request:
-    branches:
-#      - main
-
-jobs:
-  reasoning:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        components: clippy
-        override: true
-
-    - name: Repl
-      run: |
-        cargo build --features="repl" --release
-
-    - name: LLama
-      run: |
-        ./target/release/3body -V
-        git clone https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml
-        ./target/release/3body -c 'let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./vicuna-13b-chinese-4bit-ggml/Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" }); return { "回答": fn (问题) { instance.infer(instance, 问题) } } }(); 智子.回答("中国最佳科幻小说是哪个")'
+#name: sophon reasoning
+#
+#on:
+#  push:
+#    branches:
+##      - '*'
+#  pull_request:
+#    branches:
+##      - main
+#
+#jobs:
+#  reasoning:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v4
+#    - uses: actions-rs/toolchain@v1
+#      with:
+#        toolchain: stable
+#        components: clippy
+#        override: true
+#
+#    - name: Repl
+#      run: |
+#        cargo build --features="repl" --release
+#
+#    - name: LLama
+#      run: |
+#        ./target/release/3body -V
+#        git clone https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml
+#        ./target/release/3body -c 'let 智子 = fn () { let instance = 智子工程({ "type": "llama", "path": "./vicuna-13b-chinese-4bit-ggml/Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" }); return { "回答": fn (问题) { instance.infer(instance, 问题) } } }(); 智子.回答("中国最佳科幻小说是哪个")'
