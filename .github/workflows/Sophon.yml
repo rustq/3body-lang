@@ -3,10 +3,10 @@ name: sophon reasoning
 on:
   push:
     branches:
-      - '*'
+#      - '*'
   pull_request:
     branches:
-      - main
+#      - main
 
 jobs:
   reasoning:
