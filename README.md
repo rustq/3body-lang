@@ -240,77 +240,7 @@ cx.thread(星环公司, ["研制曲率飞船", 5, 11])
 cx.join(秘密研究)
 ```
 
-⚛️ Example threading of "星环公司" in [runs/11302243115](https://github.com/rustq/3body-lang/actions/runs/11302243115/job/31437809217)
-
-[//]: # ()
-[//]: # (## 🤗 LLM)
-
-[//]: # ()
-[//]: # (三体编程语言可以通过 "智子工程" 加载本地大语言模型进行推理。)
-
-[//]: # ()
-[//]: # (Able to use three body language sophon to load a local large language model for reasoning, inspired by [wiki/sophon]&#40;https://three-body-problem.fandom.com/wiki/Sophon&#41; and powered by [rustformers/llm]&#40;https://github.com/rustformers/llm&#41;.)
-
-[//]: # ()
-[//]: # (![sophon]&#40;https://github.com/rustq/3body-lang/assets/11075892/4579ecbe-3e52-4b0f-8f0b-31e3b071a79b&#41;)
-
-[//]: # ()
-[//]: # (#### Sophon Initializing)
-
-[//]: # ()
-[//]: # (```shell)
-
-[//]: # (智子工程&#40;{ "type": <string>, "path": <string>, "prompt": <string> }&#41;)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (|property|type|Explanation|)
-
-[//]: # (|---|---|---|)
-
-[//]: # (|type|string|模型类型|)
-
-[//]: # (|path|string|模型所在路径|)
-
-[//]: # (|prompt|string|提示词|)
-
-[//]: # (#### Reasoning)
-
-[//]: # ()
-[//]: # (```rust)
-
-[//]: # (let 智子 = fn &#40;&#41; { let instance = 智子工程&#40;{ "type": "llama", "path": "./Vicuna-13B-chinese.bin", "prompt": "你是三体文明的智子" }&#41;; return { "回答": fn &#40;问题&#41; { instance.infer&#40;instance, 问题&#41; } } }&#40;&#41;;)
-
-[//]: # ()
-[//]: # (智子.回答&#40;"中国最佳科幻小说是哪个"&#41;)
-
-[//]: # ()
-[//]: # (// > 推理中...)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (|property|type|Explanation|)
-
-[//]: # (|---|---|---|)
-
-[//]: # (|model|<NativeObject::LLMModel>|模型|)
-
-[//]: # (|character|string|提示词角色|)
-
-[//]: # (|infer|BuiltinFunc|执行推理|)
-
-[//]: # (|close|BuiltinFunc|关闭会话|)
-
-[//]: # ()
-[//]: # ([![sophon workflow]&#40;https://github.com/rustq/3body-lang/actions/workflows/Sophon.yml/badge.svg&#41;]&#40;https://github.com/rustq/3body-lang/actions/&#41;)
-
-[//]: # ()
-[//]: # (⚛️ Example reasoning of "中国最佳科幻小说是哪个" in [runs/11092893924]&#40;https://github.com/rustq/3body-lang/actions/runs/11092893924/job/30818494323?pr=47#step:5:2676&#41;)
-
-[//]: # ()
-[//]: # (Model powered by [huantian2415/vicuna-13b-chinese-4bit-ggml]&#40;https://huggingface.co/huantian2415/vicuna-13b-chinese-4bit-ggml&#41;)
+⚛️ Example threading of "星环公司" in [runs/14773757696](https://github.com/rustq/3body-lang/actions/runs/14773757696/job/41478235050)
 
 ## Development
 
